@@ -154,6 +154,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </ul>
           </li>
           <li class="nav-item">
+            <a href="{{ route('academic-years') }}" class="nav-link">
+              <i class="nav-icon far fa-calendar-alt"> </i>
+              <p>
+                Academic Years
+                {{-- <span class="right badge badge-danger">New</span> --}}
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fa fa-th"></i>
               <p>
@@ -176,12 +185,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Starter Page</h1>
+            <h1 class="m-0 text-dark">{{ $title }}</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Starter Page</li>
+              <li class="breadcrumb-item active">{{ $title }}</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -192,6 +201,34 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
+
+         <div class="row">
+    <div class="col-lg-12">
+
+        <!--  ==================================SESSION MESSAGES==================================  -->
+        @if (session()->has('message'))
+            <div class="alert alert-{!! session()->get('type')  !!} alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                {!! session()->get('message')  !!}
+            </div>
+        @endif
+    <!--  ==================================SESSION MESSAGES==================================  -->
+
+
+    <!--  ==================================VALIDATION ERRORS==================================  -->
+        @if($errors->any())
+            @foreach ($errors->all() as $error)
+
+                <div class="alert alert-danger alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {!!  $error !!}
+                </div>
+
+        @endforeach
+     @endif
+    <!--  ==================================SESSION MESSAGES==================================  -->
+
+  </div></div>
 
 
         @yield('content')

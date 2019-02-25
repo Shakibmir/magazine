@@ -25,5 +25,24 @@ Route::get('/student', 'StudentController@index')->name('student');
 Route::get('/faculty', 'FacultyController@index')->name('faculty');
 
 
+Route::group(['prefix' => 'admin'], function() {
+
+
+Route::get('academic-years', 'AdminController@getAcademicYear')->name('academic-years');
+// Route::get('add-academic-year', 'AdminController@addAcademicYear')->name('add-academic-year');
+Route::post('add-academic-year', 'AdminController@postAcademicYear')->name('post-academic-year');
+Route::get('edit-academic-year/{id}', 'AdminController@editAcademicYear')->name('edit-academic-year');
+Route::post('edit-academic-year/{id}', 'AdminController@updateAcademicYear')->name('update-academic-year');
+
+
+
+
+
+});
+
+
+
+
+
 
 
