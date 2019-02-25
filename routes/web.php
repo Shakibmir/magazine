@@ -14,3 +14,16 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/admin', 'AdminController@index')->name('admin');
+Route::get('/coordinator', 'CoordinatorController@index')->name('coordinator');
+Route::get('/manager', 'ManagerController@index')->name('manager');
+Route::get('/student', 'StudentController@index')->name('student');
+Route::get('/faculty', 'FacultyController@index')->name('faculty');
+
+
+
+
