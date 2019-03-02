@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Auth;
 
+use Illuminate\Support\Facades\Session;
+
 class Admin
 {
     /**
@@ -20,15 +22,25 @@ class Admin
             return $next($request);
         }
         elseif (Auth::check() && Auth::user()->role == 4) {
+            session()->flash('message', "You don't have the required permission to view the requested page!");
+            Session::flash('type', 'danger');
+       
             return redirect('/manager');
         }
         elseif (Auth::check() && Auth::user()->role == 3) {
+            session()->flash('message', "You don't have the required permission to view the requested page!");
+            Session::flash('type', 'danger');
             return redirect('/coordinator');
         }
         elseif (Auth::check() && Auth::user()->role == 2) {
+
+            session()->flash('message', "You don't have the required permission to view the requested page!");
+            Session::flash('type', 'danger');
             return redirect('/student');
         }
         else {
+            session()->flash('message', "You don't have the required permission to view the requested page!");
+            Session::flash('type', 'danger');
             return redirect('/faculty');
         }
     }

@@ -26,7 +26,8 @@ class FacultyController extends Controller
     public function index()
     {
 
-        $data['role'] = "Faculty"
+        $data['role'] = "Faculty";
+        $data['title'] = "Dashboard";
         return view('home', $data);
     }
 }

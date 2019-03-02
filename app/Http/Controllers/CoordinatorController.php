@@ -26,7 +26,8 @@ class CoordiantorController extends Controller
     public function index()
     {
 
-        $data['role'] = "Coordiantor"
+        $data['role'] = "Coordiantor";
+        $data['title'] = "Dashboard";
         return view('home', $data);
     }
 }

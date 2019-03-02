@@ -12,9 +12,11 @@
             </div>
               <!-- /.card-header -->
             <div class="card-body">
-               <form role="form" method="post" action="{{ route('update-academic-year', $ay->id) }}">
+               <form role="form" method="post" action="{{ route($uroute, $ay->id) }}">
         @csrf
         {{-- <div class="modal-body"> --}}
+
+          @if(!$isDep)
             <div class="card-body">
               <div class="form-group">
                 <label for="year">Academic Year</label>
@@ -33,6 +35,17 @@
                 <input type="date" class="form-control" id="final-date" placeholder="DD/MM" name="final_date" value="{{ $ay->final_date }}">
               </div>
             </div>
+
+            @else
+
+            <div class="card-body">
+              <div class="form-group">
+                <label for="year">Department Name</label>
+                <input type="text" class="form-control" id="year" placeholder="EEE" name="name" value="{{ $ay->name }}">
+              </div>
+            </div>
+
+            @endif
             <!-- /.card-body -->
 
             {{-- <div class="card-footer">
@@ -40,7 +53,7 @@
             </div>  --}}   
         {{-- </div> --}}
           {{-- <div class="modal-footer"> --}}
-            <a href="{{ route('academic-years') }}" class="btn btn-secondary" >Back</a>
+            <a href="{{ route($route) }}" class="btn btn-secondary" >Back</a>
             <button type="submit" class="btn btn-primary">Update {{ $title }}</button>
           {{-- </div> --}}
       </form>

@@ -37,12 +37,53 @@
                             <td class="align-middle">{{ $ay->opening_date }}</td>
                             <td class="align-middle">{{ $ay->closing_date }}</td>
                             <td class="align-middle">{{ $ay->final_date }}</td>
+
+                            @php
+                                   $cdiff = Carbon\Carbon::today()->diffInDays($ay->closing_date, false);
+                                   $fdiff = Carbon\Carbon::today()->diffInDays($ay->final_date, false);
+                            @endphp
+
                             <td class="align-middle">
                               <div class="progress progress-xs">
-                                <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                                <div class="progress-bar 
+
+
+                                @if($cdiff>0)
+
+                                bg-success
+                                    
+                                @elseif($fdiff>0)
+
+                                bg-warning
+
+                                @else
+                                 bg-danger
+
+                                @endif
+
+                                 " style="width: 55%"></div>
                               </div>
                             </td>
-                            <td class="align-middle"><span class="badge bg-danger">55 days</span></td>
+                            <td class="align-middle">
+
+                                
+                                <span class="badge
+                                @if($cdiff>0)
+
+                                bg-success
+                                    
+                                @elseif($fdiff>0)
+
+                                bg-warning
+
+                                @else
+                                 bg-danger
+
+                                @endif
+
+                                 ">
+                                 {{ $fdiff }} days
+                                </span></td>
 
                             <td>
                                 <a href="{{ route($eroute,$ay->id) }}" class="btn btn-block btn-primary btn-sm">Edit</a> 

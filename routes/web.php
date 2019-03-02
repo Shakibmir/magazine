@@ -27,12 +27,32 @@ Route::get('/faculty', 'FacultyController@index')->name('faculty');
 
 Route::group(['prefix' => 'admin'], function() {
 
+/*
+*Academic routes
+*/
 
 Route::get('academic-years', 'AdminController@getAcademicYear')->name('academic-years');
-// Route::get('add-academic-year', 'AdminController@addAcademicYear')->name('add-academic-year');
 Route::post('add-academic-year', 'AdminController@postAcademicYear')->name('post-academic-year');
 Route::get('edit-academic-year/{id}', 'AdminController@editAcademicYear')->name('edit-academic-year');
 Route::post('edit-academic-year/{id}', 'AdminController@updateAcademicYear')->name('update-academic-year');
+
+/*
+*Departmental routes
+*/
+Route::get('departments', 'AdminController@getDepartment')->name('departments');
+Route::post('add-department', 'AdminController@postDepartment')->name('post-department');
+Route::get('edit-department/{id}', 'AdminController@editDepartment')->name('edit-department');
+Route::post('edit-department/{id}', 'AdminController@updateDepartment')->name('update-department');
+
+
+
+/*
+*Contribution routes
+*/
+Route::get('contributions', 'AdminController@getContribution')->name('contributions');
+Route::post('/add-contribution', 'AdminController@postContribution')->name('post-contribution');
+Route::get('edit-contribution/{id}', 'AdminController@editContribution')->name('edit-contribution');
+Route::post('edit-contribution/{id}', 'AdminController@updateContribution')->name('update-contribution');
 
 
 
@@ -42,7 +62,16 @@ Route::post('edit-academic-year/{id}', 'AdminController@updateAcademicYear')->na
 
 
 
+Route::group(['prefix' => 'student'], function() {
 
 
+Route::get('contributions', 'StudentController@getContribution')->name('stdcontributions');
+Route::post('/add-contribution', 'StudentController@postContribution')->name('post-stdcontribution');
+Route::get('edit-contribution/{id}', 'StudentController@editContribution')->name('edit-stdcontribution');
+Route::post('edit-contribution/{id}', 'StudentController@updateContribution')->name('update-stdcontribution');
+
+
+
+});
 
 

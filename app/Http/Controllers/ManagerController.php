@@ -26,7 +26,8 @@ class ManagerController extends Controller
     public function index()
     {
 
-        $data['role'] = "Manager"
-        return view('home', $data);
+        $data['role'] = "Manager";
+        $data['title'] = "Dashboard";
+        return view('dashboard', $data);
     }
 }

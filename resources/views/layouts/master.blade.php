@@ -27,6 +27,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
   {{-- <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
+
+
+    @yield('styles')
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -111,10 +114,34 @@ scratch. This page gets rid of all links and provides the needed markup only.
                with font-awesome or any other icon font library -->
 
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{{ route('home') }}" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
+              </p>
+            </a>
+          </li>
+
+          @if(Auth::user()->role == 2)
+          <li class="nav-item">
+            <a href="{{ route('stdcontributions') }}" class="nav-link">
+              <i class="nav-icon fas fa-file-contract"></i>
+              <p>
+                Contributions
+              </p>
+            </a>
+          </li>
+
+          @endif
+
+
+          @if(Auth::user()->role == 5)
+
+          <li class="nav-item">
+            <a href="{{ route('contributions') }}" class="nav-link">
+              <i class="nav-icon fas fa-file-contract"></i>
+              <p>
+                Contributions
               </p>
             </a>
           </li>
@@ -153,12 +180,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
             </ul>
           </li>
+
+          
           <li class="nav-item">
             <a href="{{ route('academic-years') }}" class="nav-link">
               <i class="nav-icon far fa-calendar-alt"> </i>
               <p>
                 Academic Years
                 {{-- <span class="right badge badge-danger">New</span> --}}
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{{ route('departments') }}" class="nav-link">
+              <i class="nav-icon far fa-calendar-alt"> </i>
+              <p>
+                Departments
+                <span class="right badge badge-danger">New</span>
               </p>
             </a>
           </li>
@@ -171,6 +210,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </p>
             </a>
           </li>
+
+          @endif
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -272,5 +313,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('assets/dist/js/adminlte.min.js') }}"></script>
+
+
+@yield('scripts')
 </body>
 </html>
