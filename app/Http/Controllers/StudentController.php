@@ -42,8 +42,8 @@ class StudentController extends Controller
     public function getContribution()
     {
         $data['title'] = "Contribution";
-        $data['route'] = "post-contribution";
-        $data['eroute'] = "edit-contribution";
+        $data['route'] = "post-stdcontribution";
+        $data['eroute'] = "edit-stdcontribution";
 
         $uid = Auth::user()->id;
       
@@ -102,6 +102,112 @@ class StudentController extends Controller
         
 
         session()->flash('message', 'Contribution Successfully Added!');
+        Session::flash('type', 'success');
+        return redirect()->back();
+    }
+
+
+    public function editContribution($id)
+    {
+        $data['title'] = "Contribution";
+
+        $data['uroute'] = "update-stdcontribution";
+        $data['route'] = "stdcontributions";
+
+        $data['isDep'] = 2;
+        // $data['eroute'] = "edit-academic-year";
+        $data['ay'] = Contribution::findOrFail($id);
+
+
+        $con = Contribution::findOrFail($id);
+
+        $uid = Auth::user()->id; 
+
+        if ($uid != $con->user_id) {
+            session()->flash('message', 'You do not have permission to view this page!');
+            Session::flash('type', 'error');
+            return redirect()->route('stdcontributions');
+        }
+
+
+        $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
+
+
+
+        return view('admin.edit-academic-year', $data);
+    }
+
+
+    public function updateContribution($id, Request $request)
+    {
+        $data['title'] = "Contribution";
+        // $data['eroute'] = "edit-contribution";
+
+        $this->validate($request,[
+            'title' => 'required|string|max:255',
+            'academic_year' => 'required|exists:academic_years,year',
+            'doc' => 'file|mimes:doc,docx,pdf|max:5120',
+            // 'file' => 'required',
+            'file.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        // dd($diff."<br>".$cdiff."<br>".$fdiff);
+
+        $con = Contribution::findOrFail($id);
+
+
+        $uid = Auth::user()->id; 
+
+        if ($uid != $con->user_id) {
+           session()->flash('message', 'You do not have permission to view this page!');
+            Session::flash('type', 'error');
+            return redirect()->route('stdcontributions');
+        }
+
+
+
+
+        $con['title'] = $request->title;
+        $con['academic_year'] = $request->academic_year;
+        // $con['user_id'] = Auth::user()->id;
+
+
+        if ($request->doc) {
+            $con['file_name'] = $request->doc->getClientOriginalName();
+
+            $request->doc->store('public/upload');
+
+            
+        }
+
+        
+        
+
+        
+
+        $con->save();
+
+        $lcon = $id;
+
+        if ($request->file('file')) {
+
+            $files = $request->file('file');
+
+            foreach ($files as $file) {
+
+                $img['con_id'] = $lcon;
+                $img['name'] = $file->getClientOriginalName();
+                $file->store('public/upload');
+
+                ConImg::create($img);
+               
+            }
+
+        }
+
+        
+
+        session()->flash('message', 'Contribution Successfully Updated!');
         Session::flash('type', 'success');
         return redirect()->back();
     }

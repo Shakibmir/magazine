@@ -296,6 +296,15 @@ class AdminController extends Controller
             Session::flash('type', 'error');
             return redirect()->back();
             }
+
+            $od=Carbon::parse($request->opening_date);
+            $cdiff = $od->diffInDays($request->closing_date, false);
+
+            if ($cdiff < 1 && $ay->closing_date ==$request->closing_date) {
+            session()->flash('message', 'Opening date can not be later than the closing date!');
+            Session::flash('type', 'error');
+            return redirect()->back();
+            }
         }
 
         
@@ -305,6 +314,15 @@ class AdminController extends Controller
 
             if ($cdiff < 1) {
             session()->flash('message', 'Closing date can not be changed to older dates!');
+            Session::flash('type', 'error');
+            return redirect()->back();
+            }
+
+            $cd=Carbon::parse($request->closing_date);
+            $fdiff = $cd->diffInDays($ay->final_date, false);
+
+            if ($fdiff < 1 && $ay->final_date == $request->final_date) {
+            session()->flash('message', 'The Closing date can not be changed to later than the final date!');
             Session::flash('type', 'error');
             return redirect()->back();
             }
