@@ -39,16 +39,36 @@
                             <td class="align-middle">{{ $ay->final_date }}</td>
 
                             @php
+                                   $sdiff = Carbon\Carbon::today()->diffInDays($ay->opening_date, false);
                                    $cdiff = Carbon\Carbon::today()->diffInDays($ay->closing_date, false);
                                    $fdiff = Carbon\Carbon::today()->diffInDays($ay->final_date, false);
+                                   $stofdiff = Carbon\Carbon::parse($ay->opening_date)->diffInDays($ay->final_date, false);
+                                   $stocdiff = Carbon\Carbon::parse($ay->opening_date)->diffInDays(Carbon\Carbon::today(), false);
+                                   $pdp = (100/$stofdiff);
+                                   $progress = $pdp*$stocdiff;
+
+                                   $progress = round($progress);
+                                   // $progress = 0;
+
+
                             @endphp
 
                             <td class="align-middle">
+
+                              {{-- @if ($progress >= 0)
+                                {{ $progress }}%
+                              @endif --}}
                               <div class="progress progress-xs">
+
                                 <div class="progress-bar 
 
 
-                                @if($cdiff>0)
+                                @if($sdiff>0)
+
+                                bg-dark
+
+
+                                @elseif($cdiff>0)
 
                                 bg-success
                                     
@@ -61,14 +81,36 @@
 
                                 @endif
 
-                                 " style="width: 55%"></div>
+                                 " style="width: {{ $progress }}%">
+                                   
+                                 </div>
+                                 <span  class="popOver" data-toggle="tooltip" data-placement="top" title="
+
+                                @if ($progress >= 0 && $progress <=100 )
+                                {{ $progress }}%
+
+                                @elseif($progress >= 100)
+                                100%
+
+                                @else
+
+                                0%
+
+                                @endif
+
+                                 "> </span>    
                               </div>
                             </td>
                             <td class="align-middle">
 
                                 
                                 <span class="badge
-                                @if($cdiff>0)
+                                @if($sdiff>0)
+
+                                bg-dark
+
+
+                                @elseif($cdiff>0)
 
                                 bg-success
                                     
@@ -171,3 +213,15 @@
 </div>
 
 @endsection
+@section('scripts')
+
+<script>
+  
+$(function () { 
+  $('[data-toggle="tooltip"]').tooltip({trigger: 'manual'}).tooltip('show');
+});  
+</script>
+
+@endsection
+
+

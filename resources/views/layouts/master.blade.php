@@ -114,7 +114,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                with font-awesome or any other icon font library -->
 
           <li class="nav-item">
-            <a href="{{ route('home') }}" class="nav-link">
+            <a href="{{ route('home') }}" class="nav-link {{Request::route()->getName() == 'home' ? 'active' : '' }}">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -124,7 +124,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
           @if(Auth::user()->role == 2)
           <li class="nav-item">
-            <a href="{{ route('stdcontributions') }}" class="nav-link">
+            <a href="{{ route('stdcontributions') }}" class="nav-link {{Request::route()->getName() == 'stdcontributions' ? 'active' : '' }}">
               <i class="nav-icon fas fa-file-contract"></i>
               <p>
                 Contributions
@@ -138,15 +138,38 @@ scratch. This page gets rid of all links and provides the needed markup only.
           @if(Auth::user()->role == 5)
 
           <li class="nav-item">
-            <a href="{{ route('contributions') }}" class="nav-link">
+            <a href="{{ route('contributions') }}" class="nav-link {{Request::route()->getName() == 'contributions' ? 'active' : '' }}">
               <i class="nav-icon fas fa-file-contract"></i>
               <p>
                 Contributions
               </p>
             </a>
           </li>
+          
+
+          
+          <li class="nav-item">
+            <a href="{{ route('academic-years') }}" class="nav-link {{Request::route()->getName() == 'academic-years' ? 'active' : '' }}">
+              <i class="nav-icon far fa-calendar-alt"> </i>
+              <p>
+                Academic Years
+                {{-- <span class="right badge badge-danger">New</span> --}}
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{{ route('departments') }}" class="nav-link {{Request::route()->getName() == 'departments' ? 'active' : '' }}">
+              <i class="nav-icon far fa-calendar-alt"> </i>
+              <p>
+                Departments
+                {{-- <span class="right badge badge-danger">New</span> --}}
+              </p>
+            </a>
+          </li>
+
           <li class="nav-item has-treeview">
-            <a href="#" class="nav-link active">
+            <a href="#" class="nav-link">
               <i class="nav-icon fas fa-users"></i>
               <p>
                  Users
@@ -155,7 +178,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link active">
+                <a href="#" class="nav-link">
                   <i class="fas fa-server nav-icon"></i><span class="badge badge-success navbar-badge">1</span>
                   <p>All Users</p>
                 </a>
@@ -181,25 +204,40 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </ul>
           </li>
 
-          
-          <li class="nav-item">
-            <a href="{{ route('academic-years') }}" class="nav-link">
-              <i class="nav-icon far fa-calendar-alt"> </i>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="fas fa-chart-area"></i>
               <p>
-                Academic Years
-                {{-- <span class="right badge badge-danger">New</span> --}}
+                 Reports
+                <i class="right fa fa-angle-left"></i>
               </p>
             </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ route('departments') }}" class="nav-link">
-              <i class="nav-icon far fa-calendar-alt"> </i>
-              <p>
-                Departments
-                <span class="right badge badge-danger">New</span>
-              </p>
-            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('con-report') }}" class="nav-link">
+                  <i class="fas fa-chart-bar"></i>
+                  <p>Number of contributions</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('con-percentage') }}" class="nav-link">
+                  <i class="fas fa-chart-pie"></i>
+                  <p>Percentage of contributions </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('contributor-number') }}" class="nav-link">
+                  <i class="far fa-chart-bar"></i>
+                  <p>Number of contributors </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('contributor-without-comment') }}" class="nav-link">
+                  <i class="fas fa-comments"></i>
+                  <p>Comment status</p>
+                </a>
+              </li>
+            </ul>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link">
@@ -296,7 +334,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <footer class="main-footer">
     <!-- To the right -->
     <div class="float-right d-none d-sm-inline">
-      Anything you want
+      
     </div>
     <!-- Default to the left -->
     <strong>Copyright &copy; 2019 <a href="#">Mominul Islam</a>.</strong> All rights reserved.

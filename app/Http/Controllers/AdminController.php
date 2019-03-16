@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\AcademicYear;
 use App\Department;
+use App\Comment;
 use App\Contribution;
 use App\ConImg;
 
@@ -45,13 +46,183 @@ class AdminController extends Controller
         $data['title'] = "Contribution";
         $data['route'] = "post-contribution";
         $data['eroute'] = "edit-contribution";
+        $data['sroute'] = "single-contribution";
+        $data['aroute'] = "approve-contribution";
       
-        $data['cons'] = Contribution::orderBy('id', 'asc')->paginate(10);
         $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
+        $cay = AcademicYear::whereYear('opening_date', '=', date('Y'))->first();
+        $data['cay'] = $cay;
+        $data['cons'] = Contribution::whereAcademicYear($cay->id)->orderBy('id', 'asc')->paginate(10);
+        $data['allcons'] = Contribution::whereAcademicYear($cay->id)->get()->count();
+        $data['comcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[2,4])->count();
+        $data['apvcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[3,4])->count();
+        $data['pencons'] = Contribution::whereAcademicYear($cay->id)->whereStatus(1)->count();
+
+
 
 
 
         return view('common.contribution', $data);
+    }
+
+    public function getContributionsByYear($year)
+    {
+
+        // $this->validate($request,[
+        //     'academic_year' => 'required|exists:academic_years,year',
+        // ]);
+
+        $data['title'] = "Contribution";
+        $data['route'] = "post-contribution";
+        $data['eroute'] = "edit-contribution";
+        $data['sroute'] = "single-contribution";
+        $data['aroute'] = "approve-contribution";
+
+        $ays = AcademicYear::orderBy('id', 'desc')->get();
+        $cay = AcademicYear::where('year',$year)->first();
+        $cay = AcademicYear::findOrFail($cay->id);
+        $data['cay'] = $cay;
+        $uid = Auth::user()->id;
+        $data['cons'] = Contribution::whereAcademicYear($cay->id)->orderBy('id', 'asc')->paginate(10);
+        $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
+
+        $data['allcons'] = Contribution::whereAcademicYear($cay->id)->get()->count();
+        $data['comcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[2,4])->count();
+        $data['apvcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[3,4])->count();
+        $data['pencons'] = Contribution::whereAcademicYear($cay->id)->whereStatus(1)->count();
+
+        return view('common.contribution', $data);
+    }
+
+       
+
+
+    public function getApprovedContributions()
+    {
+        $data['title'] = "Contribution";
+        $data['route'] = "post-contribution";
+        $data['eroute'] = "edit-contribution";
+        $data['sroute'] = "single-contribution";
+        $data['aroute'] = "approve-contribution";
+      
+        $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
+        $cay = AcademicYear::whereYear('opening_date', '=', date('Y'))->first();
+        $data['cay'] = $cay;
+        $data['cons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[3,4])->orderBy('id', 'asc')->paginate(10);
+        $data['allcons'] = Contribution::whereAcademicYear($cay->id)->get()->count();
+        $data['comcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[2,4])->count();
+        $data['apvcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[3,4])->count();
+        $data['pencons'] = Contribution::whereAcademicYear($cay->id)->whereStatus(1)->count();
+
+
+
+        return view('common.contribution', $data);
+    }
+
+
+    public function getCommentedContribution()
+    {
+        $data['title'] = "Contribution";
+        $data['route'] = "post-contribution";
+        $data['eroute'] = "edit-contribution";
+        $data['sroute'] = "single-contribution";
+        $data['aroute'] = "approve-contribution";
+      
+        $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
+        $cay = AcademicYear::whereYear('opening_date', '=', date('Y'))->first();
+        $data['cay'] = $cay;
+        $data['cons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[2,4])->orderBy('id', 'asc')->paginate(10);
+        $data['allcons'] = Contribution::whereAcademicYear($cay->id)->get()->count();
+        $data['comcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[2,4])->count();
+        $data['apvcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[3,4])->count();
+        $data['pencons'] = Contribution::whereAcademicYear($cay->id)->whereStatus(1)->count();
+
+
+
+        return view('common.contribution', $data);
+    }
+
+    public function getPendingContribution()
+    {
+        $data['title'] = "Contribution";
+        $data['route'] = "post-contribution";
+        $data['eroute'] = "edit-contribution";
+        $data['sroute'] = "single-contribution";
+        $data['aroute'] = "approve-contribution";
+      
+        $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
+        $cay = AcademicYear::whereYear('opening_date', '=', date('Y'))->first();
+        $data['cay'] = $cay;
+        $data['cons'] = Contribution::whereAcademicYear($cay->id)->whereStatus(1)->orderBy('id', 'asc')->paginate(10);
+        $data['allcons'] = Contribution::whereAcademicYear($cay->id)->get()->count();
+        $data['comcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[2,4])->count();
+        $data['apvcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[3,4])->count();
+        $data['pencons'] = Contribution::whereAcademicYear($cay->id)->whereStatus(1)->count();
+
+
+
+        return view('common.contribution', $data);
+    }
+
+
+    public function getApproveContribution($id){
+        $con = Contribution::findOrFail($id);
+
+        if ($con->status == 1) {
+            $con->status = 3;
+
+            $con->save();
+        }elseif ($con->status == 2) {
+            $con->status = 4;
+            $con->save();
+        }else{
+        session()->flash('message', 'Contribution is already approved or something went wrong!');
+        Session::flash('type', 'warning');
+        return redirect()->back();
+        }
+
+        session()->flash('message', 'Contribution status Successfully updated!');
+        Session::flash('type', 'success');
+        return redirect()->back();
+        
+    }
+
+
+    public function postApproveContributions(Request $request){
+
+        $this->validate($request,[
+            'id' => 'required',
+            'id.*' => 'numeric|exists:contributions,id',
+        ]);
+
+        $ids = $request->id;
+
+    foreach ($ids as $id) {
+            # code...
+       
+
+        $con = Contribution::findOrFail($id);
+
+        if ($con->status == 1) {
+            $con->status = 3;
+
+            $con->save();
+        }elseif ($con->status == 2) {
+            $con->status = 4;
+            $con->save();
+        }elseif ($con->status == 3 || $con->status == 4 ) {
+            # Do nothing...
+        }else{
+        session()->flash('message', ' One or more Contribution is already approved or something went wrong with it!');
+        Session::flash('type', 'warning');
+        return redirect()->back();
+        }
+
+    }
+        session()->flash('message', 'Contribution(s) status Successfully updated!');
+        Session::flash('type', 'success');
+        return redirect()->back();
+  
     }
 
 
@@ -63,7 +234,7 @@ class AdminController extends Controller
 
         $this->validate($request,[
             'title' => 'required|string|max:255',
-            'academic_year' => 'required|exists:academic_years,year',
+            'academic_year' => 'required|exists:academic_years,id',
             'doc' => 'required|file|mimes:doc,docx,pdf|max:5120',
             'file' => 'required',
             'file.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -102,6 +273,89 @@ class AdminController extends Controller
 
         session()->flash('message', 'Contribution Successfully Added!');
         Session::flash('type', 'success');
+        return redirect()->back();
+    }
+
+    public function getSingleContribution($id)
+    {
+        $data['title'] = "Contribution";
+
+        // $data['uroute'] = "update-contribution";
+        $data['route'] = "add-comment";
+
+        // $data['isDep'] = 2;
+        // $data['eroute'] = "edit-academic-year";
+        $data['con'] = Contribution::findOrFail($id);
+
+        $data['comments'] = Comment::whereConId($id)->orderBy('id', 'asc')->paginate(10);
+        $data['comcount'] = Comment::whereConId($id)->count();
+
+       // $con = Contribution::findOrFail($id);
+
+        // $acyear = AcademicYear::findOrFail($con->academic_year);
+
+
+
+        $con = Contribution::findOrFail($id);
+
+        // $uid = Auth::user()->id; 
+
+        // if ($uid != $con->user_id) {
+        //     session()->flash('message', 'You do not have permission to view this page!');
+        //     Session::flash('type', 'error');
+        //     return redirect()->route('stdcontributions');
+        // }
+
+
+
+
+
+        return view('common.contribution-single', $data);
+    }
+
+
+    public function addComment($id,Request $request)
+    {
+
+
+       $con = Contribution::findOrFail($id);
+
+
+       $uid = Auth::user()->id; 
+
+       $this->validate($request,[
+            'comment' => 'required|string',
+        ]);
+
+
+        $com['comment'] = $request->comment;
+        $com['user_id'] = $uid;
+        $com['con_id'] = $id;
+
+        Comment::create($com);
+
+
+        if ($con->status == 1) {
+            $con->status = 2;
+
+            $con->save();
+        }elseif ($con->status == 3) {
+            $con->status = 4;
+            $con->save();
+        }elseif ($con->status == 3 || $con->status == 4 ) {
+            # Do nothing...
+        }else{
+        session()->flash('message', 'Something went wrong with your update please contact the server admin!');
+        Session::flash('type', 'warning');
+        return redirect()->back();
+        }
+
+        session()->flash('message', 'Comment Successfully Added!');
+        Session::flash('type', 'success');
+
+
+
+
         return redirect()->back();
     }
 
@@ -350,5 +604,109 @@ class AdminController extends Controller
         session()->flash('message', 'Academic Year Successfully Updated!');
         Session::flash('type', 'success');
         return redirect()->back();
+    }
+
+
+
+    public function getContributionReport()
+    {
+        $data['title'] = "Number of Contributions";
+        $data['rptype'] = 1;
+      
+        $data['reps'] = Contribution::with('user')->get()->groupBy('user.department_id');
+        // $reps = Contribution::with('user')->get()->groupBy('user.department_id');
+        $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
+        $data['deps'] = Department::all();
+
+
+        return view('common.reports', $data);
+    }
+
+    public function getContributionPercentage()
+    {
+        $data['title'] = "Percentage of Contributions";
+        $data['rptype'] = 3;
+      
+        $data['reps'] = Contribution::with('user')->get()->groupBy('user.department_id');
+        // $reps = Contribution::with('user')->get()->groupBy('user.department_id');
+        $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
+        $data['deps'] = Department::all();
+
+
+        return view('common.reports', $data);
+    }
+
+    public function getContributorNumberpage()
+    {
+        $data['title'] = "Number of Contributors";
+        $data['route'] = "post-contributor-number";
+        $data['rptype'] = 0;
+      
+        // $data['reps'] = Contribution::with('user')->get()->groupBy('user.department_id');
+        // $urep = Contribution::with('user')->get()->where('user.department_id', '1')->groupBy('user_id');
+        // $urep = Contribution::with('user')->get()->where('user.department_id', '1')->groupBy('user_id')->count();
+        // $reps = Contribution::with('user')->get()->groupBy('user.department_id');
+        // $data['ureps'] = $urep;
+        $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
+        $data['deps'] = Department::all();
+
+        return view('common.reports', $data);
+    }
+
+
+    public function getContributorNumber(Request $request)
+    {
+        $data['title'] = "Number of Contributors";
+        $data['route'] = "post-contributor-number";
+
+
+        $this->validate($request,[
+            'academic_year' => 'required|exists:academic_years,id',
+            'department' => 'required|exists:departments,id',
+        ]);
+
+        // $data['route'] = "post-contribution";
+        $data['pay'] = AcademicYear::findOrFail($request->academic_year);
+        $data['pdp'] = Department::findOrFail($request->department);
+
+        $data['rptype'] = 2;
+      
+        $data['reps'] = Contribution::with('user')->get()->groupBy('user.department_id');
+        // $urep = Contribution::with('user')->get()->where('user.department_id', '1')->groupBy('user_id');
+        $urep = Contribution::whereAcademicYear($request->academic_year)->with('user')->get()->where('user.department_id', $request->department)->groupBy('user_id')->count();
+        // $reps = Contribution::with('user')->get()->groupBy('user.department_id');
+        $data['ureps'] = $urep;
+        $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
+        $data['deps'] = Department::all();
+
+
+
+        // dd($urep);
+
+        return view('common.reports', $data);
+    }
+
+
+
+    public function getContributorWithoutComment()
+    {
+        $data['title'] = "Contribution Without Comment";
+        // $data['route'] = "post-contribution";
+        // $data['eroute'] = "edit-contribution";
+        // $data['sroute'] = "single-contribution";
+        // $data['aroute'] = "approve-contribution";
+        $data['rptype'] = 4;
+      
+        $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
+        $data['deps'] = Department::all();
+        // $data['cons'] = Contribution::whereStatus(1)->orderBy('id', 'asc')->paginate(10);
+        $data['allcons'] = Contribution::all()->count();
+        $data['comcons'] = Contribution::whereNotIn('status',[2,4])->count();
+        $data['nocoms'] = Contribution::whereNotIn('status',[2,4])->where('created_at', '<=', Carbon::now()->subDays(14)->toDateTimeString())->count();
+
+
+
+
+        return view('common.reports', $data);
     }
 }

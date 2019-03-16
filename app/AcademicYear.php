@@ -12,7 +12,10 @@ class AcademicYear extends Model
      *
      * @var array
      */
+
+    public $timestamps = true;
     protected $fillable = [
         'year', 'opening_date','closing_date','final_date',
     ];
+
 }

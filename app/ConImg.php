@@ -15,4 +15,6 @@ class ConImg extends Model
     protected $fillable = [
         'con_id','name','path',
     ];
+
+    public $timestamps = true;
 }

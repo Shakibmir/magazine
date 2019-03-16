@@ -17,10 +17,12 @@ class Contribution extends Model
     ];
 
     public function acyear() {
-		return $this->belongsTo(AcademicYear::class, 'academic_year', 'year');
+		return $this->belongsTo(AcademicYear::class, 'academic_year', 'id');
 	}
 
 	public function user() {
 		return $this->belongsTo(User::class, 'user_id');
 	}
+
+    public $timestamps = true;
 }

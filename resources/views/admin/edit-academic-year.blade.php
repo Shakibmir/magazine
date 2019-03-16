@@ -53,7 +53,7 @@
                     <select name="academic_year" id="academic_year" class="form-control">
 
                     @foreach($ays as $aye)
-                    <option value="{{ $aye->year }}" {{ $aye->year == $ay->academic_year ? 'selected="selected"' : '' }}>{{ $aye->year }}</option>
+                    <option value="{{ $aye->id }}" {{ $aye->id == $ay->academic_year ? 'selected="selected"' : '' }}>{{ $aye->year }}</option>
 
                     @endforeach
 
