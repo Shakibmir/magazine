@@ -372,10 +372,5 @@ $('#select-all').click(function(event) {
 
 </script>
 
-<script type="text/javascript">
-    jQuery(document).ready(function() {
-        jQuery('[disabled="disabled"]').css({ 'color': '#993333', 'background-color': '#ffffcc' });
-    });
-</script>
 
 @endsection
