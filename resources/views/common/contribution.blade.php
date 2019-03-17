@@ -49,16 +49,25 @@
                 <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addContribution"><i class="far fa-calendar-plus mr-2"> </i>   Add Contribution</button>
                 @endif
 
+                <form id="year-change" method="post" action="{{ route(Request::route()->getName()) }}">
+                  @csrf
+
                 <div class="form-group mt-2">
 
-                  <label>Academic Year</label>
+                  
 
-                  <select class="form-control float-right" id="academic-year">
+                  <label>Select Academic Year</label>
+
+                  <select class="form-control float-right" id="academic-year" name="year" onchange="event.preventDefault(); document.getElementById('year-change').submit();">
                     @foreach ($ays as $ay)
                         <option value="{{ $ay->year }}" {{ $ay->id == $cay->id ? 'selected="selected"' : '' }}>{{ $ay->year }}</option>
                     @endforeach
                   </select>
+
+                  
+                  
                 </div>
+                </form>
             </div>
               <!-- /.card-header -->
         @if(Auth::user()->role > 4)
@@ -157,7 +166,7 @@
 
                             <td>
                               @if(Auth::user()->role == 2)
-                                @if($fdiff>=0 && $odiff < 0)
+                                @if($fdiff>=0 || $odiff < 0)
                                   <a href="{{ route($eroute,$con->id) }}" class="btn btn-primary btn-sm">Edit</a>
                                 @else
                                   <button type="button" class="btn btn-primary btn-sm" disabled="">Edit</button>
@@ -192,6 +201,13 @@
             <div class="card-footer clearfix">
               @if(Auth::user()->role > 4)
                 <button type="submit" class="btn btn-success btn-sm" id="approvebtn" disabled="">Approve Selected Contributions</button>
+
+               @if ($apvcons > 0)
+                  <a href="{{ route('zip') }}"  class="btn btn-primary btn-sm ml-2" id="download"><i class="fas fa-file-archive"></i> Download Approved Contributions</a>
+                @else
+                <button type="button" class="btn btn-primary btn-sm ml-2" id="disdownload" disabled=""><i class="fas fa-file-archive"></i> Download Approved Contributions</button>
+              @endif 
+                
               @endif
 
               <div class="float-right">{{ $cons->links() }}</div>
@@ -268,6 +284,11 @@
                 <label for="photo">Photos</label>
                 <input type="file" class="form-control" id="photo" placeholder="" name="file[]" multiple="">
               </div>
+
+              <div class="form-group">
+                <input type="checkbox" class="form-check-input" id="tc" placeholder="" name="tc">
+                <label class="form-check-label" for="tc">Agree to our Terms and Conditions</label>
+              </div>
               
             </div>
             <!-- /.card-body -->  
@@ -315,7 +336,7 @@
 @if (Auth::user()->role == 2)
   {{-- expr --}}
 
-$(document).ready(function() {
+{{-- $(document).ready(function() {
   $("#academic-year").change(function(){
     if ($(this).val()!='') {
       var year = $(this).val();
@@ -328,9 +349,11 @@ $(document).ready(function() {
   });
 });
 
+--}}
+
 @elseif(Auth::user()->role == 5)
 
-$(document).ready(function() {
+{{-- $(document).ready(function() {
   $("#academic-year").change(function(){
     if ($(this).val()!='') {
       var year = $(this).val();
@@ -342,6 +365,8 @@ $(document).ready(function() {
     }
   });
 });
+
+--}}
 
 @endif
 

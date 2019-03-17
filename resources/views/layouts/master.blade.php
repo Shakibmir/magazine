@@ -68,11 +68,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <!-- Notifications Dropdown Menu -->
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
-            <i class="fas fa-user"></i> {{ Auth::user()->name }}
+            <i class="fas fa-user mr-2"></i> {{ Auth::user()->name }}
         </a>
         <div class="dropdown-menu dropdown-menu-md dropdown-menu-right">
           <a href="#" class="dropdown-item">
             <i class="fas fa-user-cog mr-2"></i> My Account
+          </a>
+          <a href="{{ route('change-password') }}" class="dropdown-item">
+            <i class="fas fa-fingerprint mr-2"></i> Change Password
           </a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{{ route('logout') }}"
@@ -168,44 +171,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
           </li>
 
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-users"></i>
-              <p>
-                 Users
-                <i class="right fa fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="fas fa-server nav-icon"></i><span class="badge badge-success navbar-badge">1</span>
-                  <p>All Users</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="fas fa-server nav-icon"></i><span class="badge badge-success navbar-badge">2</span>
-                  <p>Managers</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="fas fa-server nav-icon"></i><span class="badge badge-success navbar-badge">3</span>
-                  <p>Coordinators</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="fas fa-server nav-icon"></i><span class="badge badge-success navbar-badge">4</span>
-                  <p>Students</p>
-                </a>
-              </li>
-            </ul>
-          </li>
 
           <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
+            <a href="#" class="nav-link {{Request::route()->getName() == 'con-report' || Request::route()->getName() == 'con-percentage' || Request::route()->getName() == 'contributor-number' || Request::route()->getName() == 'contributor-without-comment' ? 'active' : '' }}">
               <i class="fas fa-chart-area"></i>
               <p>
                  Reports
@@ -214,31 +182,56 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{ route('con-report') }}" class="nav-link">
+                <a href="{{ route('con-report') }}" class="nav-link {{Request::route()->getName() == 'con-report' ? 'active' : '' }}">
                   <i class="fas fa-chart-bar"></i>
                   <p>Number of contributions</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('con-percentage') }}" class="nav-link">
+                <a href="{{ route('con-percentage') }}" class="nav-link {{Request::route()->getName() == 'con-percentage' ? 'active' : '' }}">
                   <i class="fas fa-chart-pie"></i>
                   <p>Percentage of contributions </p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('contributor-number') }}" class="nav-link">
+                <a href="{{ route('contributor-number') }}" class="nav-link {{Request::route()->getName() == 'contributor-number' ? 'active' : '' }}">
                   <i class="far fa-chart-bar"></i>
                   <p>Number of contributors </p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('contributor-without-comment') }}" class="nav-link">
+                <a href="{{ route('contributor-without-comment') }}" class="nav-link {{Request::route()->getName() == 'contributor-without-comment' ? 'active' : '' }}">
                   <i class="fas fa-comments"></i>
                   <p>Comment status</p>
                 </a>
               </li>
             </ul>
           </li>
+
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link {{Request::route()->getName() == 'users' || Request::route()->getName() == 'add-user' ? 'active' : '' }}">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                 Users
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('add-user') }}" class="nav-link {{Request::route()->getName() == 'add-user' ? 'active' : '' }}">
+                  <i class="fas fa-user-plus"></i>
+                  <p> Add User</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('users') }}" class="nav-link {{Request::route()->getName() == 'users' ? 'active' : '' }}">
+                  <i class="fas fa-clipboard-list"></i>
+                  <p> All Users</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fa fa-th"></i>
@@ -268,7 +261,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
               <li class="breadcrumb-item active">{{ $title }}</li>
             </ol>
           </div><!-- /.col -->

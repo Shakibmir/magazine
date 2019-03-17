@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Session;
 use App\AcademicYear;
 use App\Comment;
 use App\ConImg;
@@ -40,7 +41,7 @@ class StudentController extends Controller
         return view('dashboard', $data);
     }
 
-    public function getContribution()
+    public function getContribution(Request $request)
     {
         $data['title'] = "Contribution";
         $data['route'] = "post-stdcontribution";
@@ -49,7 +50,26 @@ class StudentController extends Controller
         $data['yroute'] = "stdcontributions-year";
 
         $ays = AcademicYear::orderBy('id', 'desc')->get();
-        $cay = AcademicYear::whereYear('opening_date', '=', date('Y'))->first();
+        $uay = Cookie::get('uay');
+
+        if ($request->year) {
+
+        $this->validate($request,[
+            'year' => 'required|exists:academic_years,year',
+        ]);
+
+        $nray = AcademicYear::where('year',$request->year)->first();
+
+        $uay = $nray->id;
+
+        Cookie::queue('uay', $uay, 300);    
+        }
+
+        if ($uay) {
+            $cay = AcademicYear::findOrFail($uay);
+        }else{
+            $cay = AcademicYear::whereYear('opening_date', '=', date('Y'))->first();
+        }
         $data['cay'] = $cay;
         $uid = Auth::user()->id;
         $data['cons'] = Contribution::whereAcademicYear($cay->id)->whereUserId($uid)->orderBy('id', 'asc')->paginate(10);
@@ -57,32 +77,6 @@ class StudentController extends Controller
 
         return view('common.contribution', $data);
     }
-
-
-    public function getContributionsByYear($year)
-    {
-
-        // $this->validate($request,[
-        //     'academic_year' => 'required|exists:academic_years,year',
-        // ]);
-
-        $data['title'] = "Contribution";
-        $data['route'] = "post-stdcontribution";
-        $data['eroute'] = "edit-stdcontribution";
-        $data['sroute'] = "single-stdcontribution";
-
-        $ays = AcademicYear::orderBy('id', 'desc')->get();
-        $cay = AcademicYear::where('year',$year)->first();
-        $cay = AcademicYear::findOrFail($cay->id);
-        $data['cay'] = $cay;
-        $uid = Auth::user()->id;
-        $data['cons'] = Contribution::whereAcademicYear($cay->id)->whereUserId($uid)->orderBy('id', 'asc')->paginate(10);
-        $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
-
-        return view('common.contribution', $data);
-    }
-
-
 
     public function postContribution(Request $request)
     {

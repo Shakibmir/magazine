@@ -1,13 +1,22 @@
 @extends('layouts.master')
 @section('styles')
 
+  <!-- Morris chart -->
+  <link rel="stylesheet" href="{{ asset('assets/plugins/morris/morris.css')}}">
+
 @endsection
 @section('content')
-@if( (Auth::user()->role == 1 || Auth::user()->role > 4 )  && ($rptype==2 || $rptype==0))
+@if( (Auth::user()->role == 1 || Auth::user()->role > 4 ))
 <!-- SELECT2 EXAMPLE -->
   <div class="card card-default">
     <div class="card-header">
-      <h3 class="card-title">Select Academic and Department for the report</h3>
+
+      @if ($rptype==1 || $rptype==3 || $rptype==4)
+        <h3 class="card-title">Change Academic</h3>
+      @else
+      <h3 class="card-title">Select Academic Year and Department to genarate a report</h3>
+      @endif
+      
 
       <div class="card-tools">
         <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -15,26 +24,36 @@
       </div>
     </div>
     <!-- /.card-header -->
-    <form role="form" method="post" action="{{ route($route) }}" >
+    <form role="form" method="post" action="{{ route(Request::route()->getName()) }}" >
       @csrf
     <div class="card-body">
       <div class="row">
-      
-        <div class="col-md-4">
+      @if ($rptype==1 || $rptype==3 || $rptype==4)
+
+       <div class="col-md-8">
           <div class="form-group">
-            {{-- <label>Academic Year</label> --}}
-            {{-- <select class="form-control select2" style="width: 100%;" name="academic_year">
+            <select class="form-control" name="academic_year">
               <option selected="selected">Choose Academic Year</option>
               @foreach($ays as $ay)
-              <option value="{{ $ay->id }}">{{ $ay->year }}</option>
+              <option value="{{ $ay->id }}"
+                @if ($cay)
+                {{ $ay->id == $cay->id ? 'selected="selected"' : '' }}
+              @endif >{{ $ay->year }}</option>
               @endforeach
-            </select> --}}
-
+            </select>
+          </div>
+          <!-- /.form-group -->
+        </div>
+      @else
+        <div class="col-md-4">
+          <div class="form-group">
             <select class="form-control" name="academic_year">
               <option selected="selected">Choose Academic Year</option>
               @foreach($ays as $ay)
               <option value="{{ $ay->id }}" @if ($rptype==2)
                 {{ $ay->id == $pay->id ? 'selected="selected"' : '' }}
+                @elseif ($cay)
+                {{ $ay->id == $cay->id ? 'selected="selected"' : '' }}
               @endif >{{ $ay->year }}</option>
               @endforeach
             </select>
@@ -44,14 +63,6 @@
         <!-- /.col -->
         <div class="col-md-4">
           <div class="form-group">
-            {{-- <label>Department</label> --}}
-            {{-- <select class="form-control select2" style="width: 100%;" name="department">
-              <option selected="selected">Choose a Department</option>
-              @foreach($deps as $dp)
-              <option value="{{ $dp->id }}">{{ $dp->name }}</option>
-              @endforeach   
-            </select> --}}
-
             <select class="form-control" name="department">
               <option selected="selected">Choose a Department</option>
                 @foreach($deps as $dp)
@@ -62,7 +73,7 @@
             </select>
           </div>
         </div>
-        
+      @endif
         <div class="col-md-4">
           <div class="form-group">
             <button type="submit" class="btn btn-block btn-primary">Submit</button>
@@ -87,7 +98,11 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-header">
-            <h3 class="card-title d-inline">List of {{ $title }} in each department</h3>
+          @if ($rptype==4)
+            <h3 class="card-title d-inline">{{ $title }} for {{ $cay->year }}</h3>
+          @else
+            <h3 class="card-title d-inline">List of {{ $title }} in each department for {{ $cay->year }}</h3>
+          @endif
         </div>
           <!-- /.card-header -->
         <div class="card-body">
@@ -161,7 +176,13 @@
 
                     }
 
-                    $scper = (100/$totalcon);
+                    if ($totalcon){
+                      $scper = (100/$totalcon);
+                    }else{
+                    $scper = 0;
+                    }
+
+                    
                       
                     @endphp
                     @foreach($reps as $rp => $contributions)
@@ -180,10 +201,22 @@
                 </table>
 
               @elseif($rptype==4)
-              {{ $comcons }}
-              {{ $nocoms }}
-
-
+              <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                        <th>Totals Number of Contribution(s) without comments</th>
+                        <th>Number of Contribution(s) without comments after 14 days</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="align-middle">
+                      <td class="align-middle">
+                        {{ $comcons }}
+                      </td>
+                      <td class="align-middle">{{ $nocoms }}</td>
+                    </tr>
+                  </tbody>
+                </table>
               @endif
 
             </div>
@@ -196,7 +229,7 @@
   @endif
 
 
-  @if($rptype==3)
+  @if($rptype==3 || $rptype==4)
 
   <div class="card card-danger">
     <div class="card-header">
@@ -209,7 +242,12 @@
       </div>
     </div>
     <div class="card-body">
-      <canvas id="pieChart" style="height: 306px; width: 612px;" width="765" height="382"></canvas>
+
+      @if($rptype==3)
+        <canvas id="pieChart" style="height: 306px; width: 612px;" width="765" height="382"></canvas>
+      @elseif($rptype==4)
+        <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;"></div>
+      @endif
     </div>
     <!-- /.card-body -->
   </div>
@@ -219,11 +257,14 @@
 
 @section('scripts')
 
- @if($rptype==3)
+ @if($rptype==3 || $rptype==4 )
 
 
  <!-- ChartJS 1.0.1 -->
 <script src="{{ asset('assets/plugins/chartjs-old/Chart.min.js') }}"></script>
+<!-- Morris.js charts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+<script src="{{ asset('assets/plugins/morris/morris.min.js') }}"></script>
 
 
 <script>
@@ -236,6 +277,29 @@
   }
   return color;
 }
+
+@if($rptype==4)
+// Donut Chart
+  var donut = new Morris.Donut({
+    element  : 'sales-chart',
+    resize   : true,
+    colors   : ['#dc3545', '#007bff'],
+    data     : [
+      { label: '14 days Late', value: {{ $nocoms }} },
+      { label: 'No Comment', value: {{ $comcons-$nocoms }} }
+    ],
+    hideHover: 'auto'
+  })
+
+  // Fix for charts under tabs
+  $('.box ul.nav a').on('shown.bs.tab', function () {
+    area.redraw()
+    donut.redraw()
+    line.redraw()
+  })
+@endif
+
+@if($rptype==3)
 //-------------
     //- PIE CHART -
     //-------------
@@ -257,42 +321,6 @@
       },
                       
       @endforeach
-      // {
-      //   value    : 700,
-      //   color    : getRandomColor(),
-      //   highlight: getRandomColor(),
-      //   label    : 'Chrome'
-      // },
-      // {
-      //   value    : 500,
-      //   color    : getRandomColor(),
-      //   highlight: getRandomColor(),
-      //   label    : 'IE'
-      // },
-      // {
-      //   value    : 400,
-      //   color    : getRandomColor(),
-      //   highlight: getRandomColor(),
-      //   label    : 'FireFox'
-      // },
-      // {
-      //   value    : 600,
-      //   color    : '#00c0ef',
-      //   highlight: '#00c0ef',
-      //   label    : 'Safari'
-      // },
-      // {
-      //   value    : 300,
-      //   color    : '#3c8dbc',
-      //   highlight: '#3c8dbc',
-      //   label    : 'Opera'
-      // },
-      // {
-      //   value    : 100,
-      //   color    : '#d2d6de',
-      //   highlight: '#d2d6de',
-      //   label    : 'Navigator'
-      // }
     ]
     var pieOptions     = {
       //Boolean - Whether we should show a stroke on each segment
@@ -321,6 +349,8 @@
     //Create pie or douhnut chart
     // You can switch between pie and douhnut using the method below.
     pieChart.Doughnut(PieData, pieOptions)
+
+@endif
 
 </script>
  @endif
