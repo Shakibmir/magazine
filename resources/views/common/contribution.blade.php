@@ -39,6 +39,57 @@
       <br>
     </div>
     @endif
+
+  @if(Auth::user()->role == 2)
+
+    @if ($cayf)
+      @php
+        $codiff = Carbon\Carbon::today()->diffInDays($cayf->opening_date, false);
+        $ccdiff = Carbon\Carbon::today()->diffInDays($cayf->closing_date, false);
+        $cfdiff = Carbon\Carbon::today()->diffInDays($cayf->final_date, false);
+      @endphp
+      <div class="col-md-12">
+
+        @if($codiff>0)
+          <div class="alert alert-primary" role="alert">
+            Submission for Academic Year {{ $cayf->year }}  Starts in  {{ $codiff }}  Days!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+        @elseif($ccdiff>=0)
+        <div class="alert alert-success" role="alert">
+            New Submission for Academic Year {{ $cayf->year }} Has Started. You have {{ $ccdiff }} Days left to Contribute!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        @elseif($cfdiff>=0)
+        <div class="alert alert-warning" role="alert">
+            New Submission for Academic Year {{ $cayf->year }} Has Ended. For Existing Submission(s) You have {{ $cfdiff }} Days left to update!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        @else
+        <div class="alert alert-danger" role="alert">
+            Submission for Academic Year {{ $cayf->year }} Has Ended. You can't upload or Edit Contributions after the Final closure date!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        @endif
+      </div>
+    @else
+      <div class="alert alert-secondary" role="alert">
+          Sorry there is no Active academic year!
+      </div>
+    @endif
+  @endif
     <div class="col-md-12">
 
         <div class="card">
@@ -71,7 +122,14 @@
             </div>
               <!-- /.card-header -->
         @if(Auth::user()->role > 4)
-          <form action="{{ route('approve-contributions') }}" method="post">
+          <form 
+          @if (Request::route()->getName() == 'approved-contributions')
+          action="{{ route('download-approved') }}"
+          @else 
+          action="{{ route('approve-contributions') }}" 
+          @endif
+
+          method="post">
             @csrf
         @endif
             <div class="card-body">
@@ -82,7 +140,7 @@
                               @if(Auth::user()->role > 4)
                                 <th><input type="checkbox" id="select-all"></th>
                               @endif
-                                <th style="width: 10px">#</th>
+                                <th style="width: 10px"><i class="nav-icon fas fa-file-contract"></i></th>
                                 <th>Title</th>
                                 <th style="width: 40px">Academic Year</th>
                                 <th>Date Submitted</th>
@@ -147,11 +205,11 @@
 
                                 
                                 <span class="badge
-                                @if($cdiff>0)
+                                @if($cdiff>=0)
 
                                 bg-success
                                     
-                                @elseif($fdiff>0)
+                                @elseif($fdiff>=0)
 
                                 bg-warning
 
@@ -200,7 +258,12 @@
               <!-- /.card-body -->
             <div class="card-footer clearfix">
               @if(Auth::user()->role > 4)
+
+              @if (Request::route()->getName() == 'approved-contributions')
+                <button type="submit" class="btn btn-success btn-sm" id="approvebtn" disabled="">Download Selected Contributions</button>
+              @else 
                 <button type="submit" class="btn btn-success btn-sm" id="approvebtn" disabled="">Approve Selected Contributions</button>
+              @endif
 
                @if ($apvcons > 0)
                   <a href="{{ route('zip') }}"  class="btn btn-primary btn-sm ml-2" id="download"><i class="fas fa-file-archive"></i> Download Approved Contributions</a>
@@ -249,10 +312,58 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+    
       <form role="form" method="post" action="{{ route($route) }}" enctype="multipart/form-data">
         @csrf
         <div class="modal-body">
             <div class="card-body">
+              @if(Auth::user()->role == 2)
+
+                @if ($cayf)
+                  <div class="col-md-12">
+
+                    @if($codiff>0)
+                      <div class="alert alert-primary" role="alert">
+                        Submission for Academic Year {{ $cayf->year }}  Starts in  {{ $codiff }}  Days!
+                        {{-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button> --}}
+                      </div>  
+                    @elseif($ccdiff>=0)
+                    <div class="alert alert-success" role="alert">
+                        New Submission for Academic Year {{ $cayf->year }} Has Started. You have {{ $ccdiff }} Days left to Submit New Contribution!
+                        {{-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button> --}}
+                    </div>
+
+                    @elseif($cfdiff>=0)
+                    <div class="alert alert-warning" role="alert">
+                        New Submission for Academic Year {{ $cayf->year }} Has Ended. For Existing Submission(s) You have {{ $cfdiff }} Days left to update!
+                       {{--  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button> --}}
+                    </div>
+
+                    @else
+                    <div class="alert alert-danger" role="alert">
+                        Submission for Academic Year {{ $cayf->year }} Has Ended. You can't upload or Edit Contributions after the Final closure date!
+                        {{-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button> --}}
+                    </div>
+
+                    @endif
+                  </div>
+                @else
+                  <div class="alert alert-secondary" role="alert">
+                      Sorry there is no Active academic year To allow Submission!
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                @endif
+              @endif
               <div class="form-group">
                 <label for="academic_year">Choose Academic Year</label>
                 <select name="academic_year" id="academic_year" class="form-control">
@@ -274,11 +385,11 @@
               </div>
               <div class="form-group">
                 <label for="title">Title</label>
-                <input type="text" class="form-control" id="title" placeholder="Save the Tree" name="title" value="{{ old('title') }}">
+                <input type="text" class="form-control" id="title" placeholder="Some Awesome Title" name="title" value="{{ old('title') }}">
               </div>
               <div class="form-group">
                <label for="file">File</label>
-                <input type="file" class="form-control" id="file" placeholder="save-the-tree.doc" name="doc" value="{{ old('doc') }}">
+                <input type="file" class="form-control" id="file" placeholder="something-awesome.doc" name="doc" value="{{ old('doc') }}">
               </div>
               <div class="form-group">
                 <label for="photo">Photos</label>
@@ -286,7 +397,7 @@
               </div>
 
               <div class="form-group">
-                <input type="checkbox" class="form-check-input" id="tc" placeholder="" name="tc">
+                <input type="checkbox" class="form-check-input" id="tc" placeholder="" name="Terms_and_Conditions">
                 <label class="form-check-label" for="tc">Agree to our Terms and Conditions</label>
               </div>
               

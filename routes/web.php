@@ -15,7 +15,7 @@ Route::get('/', 'HomeController@index')->name('home');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/admin', 'AdminController@index')->name('admin');
 Route::get('/coordinator', 'CoordinatorController@index')->name('coordinator');
 Route::get('/manager', 'ManagerController@index')->name('manager');
@@ -65,6 +65,7 @@ Route::post('contribution/{id}', 'AdminController@addComment')->name('add-commen
 
 Route::post('approve-contributions', 'AdminController@postApproveContributions')->name('approve-contributions');
 Route::get('approve-contribution/{id}', 'AdminController@getApproveContribution')->name('approve-contribution');
+Route::post('download-approved', 'AdminController@postDownloadApproved')->name('download-approved');
 
 
 
@@ -108,6 +109,9 @@ Route::post('edit-contribution/{id}', 'StudentController@updateContribution')->n
 
 Route::get('contribution/{id}', 'StudentController@getSingleContribution')->name('single-stdcontribution');
 Route::post('contribution/{id}', 'StudentController@addComment')->name('add-stdcomment');
+
+Route::get('academic-years', 'StudentController@getAcademicYear')->name('stdacademic-years');
+Route::get('delete', 'StudentController@getDeleteCheck')->name('delete-check');
 
 });
 

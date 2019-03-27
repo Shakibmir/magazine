@@ -9,7 +9,9 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title d-inline">List of {{ $title }}s</h3>
+                @if(Auth::user()->role == 5)
                 <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addYear"><i class="far fa-calendar-plus mr-2"> </i>   Add Year</button>
+                @endif
             </div>
               <!-- /.card-header -->
             <div class="card-body">
@@ -17,14 +19,16 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th style="width: 10px">#</th>
+                                <th style="width: 10px"><i class="nav-icon far fa-calendar-alt"> </i></th>
                                 <th>Year</th>
                                 <th>Opening Date</th>
                                 <th>Closing Date</th>
                                 <th>Final Date</th>
                                 <th>Progress</th>
                                 <th style="width: 40px">Timeleft</th>
+                                @if(Auth::user()->role == 5)
                                 <th>Action</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -68,11 +72,11 @@
                                 bg-dark
 
 
-                                @elseif($cdiff>0)
+                                @elseif($cdiff>=0)
 
                                 bg-success
                                     
-                                @elseif($fdiff>0)
+                                @elseif($fdiff>=0)
 
                                 bg-warning
 
@@ -110,11 +114,11 @@
                                 bg-dark
 
 
-                                @elseif($cdiff>0)
+                                @elseif($cdiff>=0)
 
                                 bg-success
                                     
-                                @elseif($fdiff>0)
+                                @elseif($fdiff>=0)
 
                                 bg-warning
 
@@ -127,10 +131,13 @@
                                  {{ $fdiff }} days
                                 </span></td>
 
+                          @if(Auth::user()->role == 5)
+
                             <td>
                                 <a href="{{ route($eroute,$ay->id) }}" class="btn btn-block btn-primary btn-sm">Edit</a> 
                                 {{-- <a data-href="{{ route($droute,$post->id) }}" class="cat-delete text-danger"> Delete</a> --}}
                             </td>
+                          @endif
                           </tr>
 
                         @endforeach
@@ -145,27 +152,10 @@
                {{-- {!! $ays->render() !!} --}}
             </div>
         </div>
-
-            {{-- {{ $ays }} --}}
-
-
-
-            <!-- general form elements -->
-            {{-- <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">Quick Example</h3>
-              </div>
-              <!-- /.card-header -->
-              <!-- form start -->
-              
-            </div> --}}
-            <!-- /.card -->
-
-
           </div>
       </div>
 
-
+@if(Auth::user()->role == 5)
       <!-- Modal -->
 <div class="modal fade" id="addYear" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -211,6 +201,8 @@
     </div>
   </div>
 </div>
+
+@endif
 
 @endsection
 @section('scripts')

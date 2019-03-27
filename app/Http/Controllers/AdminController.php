@@ -42,7 +42,23 @@ class AdminController extends Controller
     public function index()
     {
         $data['title'] = "Dashboard";
-        return view('dashboard');
+
+        
+        $cay = AcademicYear::whereYear('opening_date', '=', date('Y'))->first();
+        $data['cay'] = $cay;
+
+        $urep = Contribution::whereAcademicYear($cay->id)->with('user')->get()->groupBy('user_id')->count(); // total number of contributor all dep
+        $data['ureps'] = $urep;
+
+        $data['totalcons'] = Contribution::all()->count();
+        $data['allcons'] = Contribution::whereAcademicYear($cay->id)->get()->count();
+        $data['userc'] = User::whereRole(2)->get()->count(); //User count
+        $data['comcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[2,4])->count();
+        $data['apvcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[3,4])->count();
+        $data['pencons'] = Contribution::whereAcademicYear($cay->id)->whereNotIn('status',[3,4])->count();
+        $data['nocoms'] = Contribution::whereAcademicYear($cay->id)->whereNotIn('status',[2,4])->count();
+        $data['nocomsl'] = Contribution::whereAcademicYear($cay->id)->whereNotIn('status',[2,4])->where('created_at', '<=', Carbon::now()->subDays(14)->toDateTimeString())->count();
+        return view('dashboard', $data);
     }
 
 
@@ -82,7 +98,7 @@ class AdminController extends Controller
             $cay = AcademicYear::whereYear('opening_date', '=', date('Y'))->first();
         }
         $data['cay'] = $cay;
-        $data['cons'] = Contribution::whereAcademicYear($cay->id)->orderBy('id', 'asc')->paginate(10);
+        $data['cons'] = Contribution::whereAcademicYear($cay->id)->orderBy('id', 'asc')->paginate(100);
         $data['allcons'] = Contribution::whereAcademicYear($cay->id)->get()->count();
         $data['comcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[2,4])->count();
         $data['apvcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[3,4])->count();
@@ -114,7 +130,7 @@ class AdminController extends Controller
         Cookie::queue('uay', $cay->id, 300);
         $data['cay'] = $cay;
         $uid = Auth::user()->id;
-        $data['cons'] = Contribution::whereAcademicYear($cay->id)->orderBy('id', 'asc')->paginate(10);
+        $data['cons'] = Contribution::whereAcademicYear($cay->id)->orderBy('id', 'asc')->paginate(100);
         $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
 
         $data['allcons'] = Contribution::whereAcademicYear($cay->id)->get()->count();
@@ -160,7 +176,7 @@ class AdminController extends Controller
             $cay = AcademicYear::whereYear('opening_date', '=', date('Y'))->first();
         }
         $data['cay'] = $cay;
-        $data['cons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[3,4])->orderBy('id', 'asc')->paginate(10);
+        $data['cons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[3,4])->orderBy('id', 'asc')->paginate(100);
         $data['allcons'] = Contribution::whereAcademicYear($cay->id)->get()->count();
         $data['comcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[2,4])->count();
         $data['apvcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[3,4])->count();
@@ -202,7 +218,7 @@ class AdminController extends Controller
             $cay = AcademicYear::whereYear('opening_date', '=', date('Y'))->first();
         }
         $data['cay'] = $cay;
-        $data['cons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[2,4])->orderBy('id', 'asc')->paginate(10);
+        $data['cons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[2,4])->orderBy('id', 'asc')->paginate(100);
         $data['allcons'] = Contribution::whereAcademicYear($cay->id)->get()->count();
         $data['comcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[2,4])->count();
         $data['apvcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[3,4])->count();
@@ -243,7 +259,7 @@ class AdminController extends Controller
             $cay = AcademicYear::whereYear('opening_date', '=', date('Y'))->first();
         }
         $data['cay'] = $cay;
-        $data['cons'] = Contribution::whereAcademicYear($cay->id)->whereNotIn('status',[3,4])->orderBy('id', 'asc')->paginate(10);
+        $data['cons'] = Contribution::whereAcademicYear($cay->id)->whereNotIn('status',[3,4])->orderBy('id', 'asc')->paginate(100);
         $data['allcons'] = Contribution::whereAcademicYear($cay->id)->get()->count();
         $data['comcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[2,4])->count();
         $data['apvcons'] = Contribution::whereAcademicYear($cay->id)->whereIn('status',[3,4])->count();
@@ -258,6 +274,16 @@ class AdminController extends Controller
     public function getApproveContribution($id){
         $con = Contribution::findOrFail($id);
 
+
+        $conimgs = ConImg::whereConId($id)->get();
+
+
+        if (!$con->status > 2 && ($con->file_name || $conimgs)) {
+
+            File::move('upload/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/', 'upload/approved/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/');
+        }
+
+
         if ($con->status == 1) {
             $con->status = 3;
 
@@ -270,6 +296,7 @@ class AdminController extends Controller
         Session::flash('type', 'warning');
         return redirect()->back();
         }
+
 
         session()->flash('message', 'Contribution status Successfully updated!');
         Session::flash('type', 'success');
@@ -287,15 +314,18 @@ class AdminController extends Controller
 
         $ids = $request->id;
 
-    foreach ($ids as $id) {
-            # code...
-       
+    foreach ($ids as $id) {       
 
         $con = Contribution::findOrFail($id);
+        $conimgs = ConImg::whereConId($id)->get();
+
+
+        if (!$con->status > 2 && ($con->file_name || $conimgs)) {
+            File::move('upload/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/', 'upload/approved/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/');
+        }
 
         if ($con->status == 1) {
             $con->status = 3;
-
             $con->save();
         }elseif ($con->status == 2) {
             $con->status = 4;
@@ -369,6 +399,7 @@ class AdminController extends Controller
     public function getSingleContribution($id)
     {
         $data['title'] = "Contribution";
+        $data['aroute'] = "approve-contribution";
 
         // $data['uroute'] = "update-contribution";
         $data['route'] = "add-comment";
@@ -376,8 +407,10 @@ class AdminController extends Controller
         // $data['isDep'] = 2;
         // $data['eroute'] = "edit-academic-year";
         $data['con'] = Contribution::findOrFail($id);
+        $conimgs = ConImg::whereConId($id)->get();
+        $data['conimgs'] = $conimgs;
 
-        $data['comments'] = Comment::whereConId($id)->orderBy('id', 'asc')->paginate(10);
+        $data['comments'] = Comment::whereConId($id)->orderBy('id', 'asc')->paginate(100);
         $data['comcount'] = Comment::whereConId($id)->count();
 
        // $con = Contribution::findOrFail($id);
@@ -452,11 +485,11 @@ class AdminController extends Controller
 
     public function getDepartment()
     {
-        $data['title'] = "Department";
+        $data['title'] = "Faculty";
         $data['route'] = "post-department";
         $data['eroute'] = "edit-department";
       
-        $data['deps'] = Department::orderBy('id', 'asc')->paginate(10);
+        $data['deps'] = Department::orderBy('id', 'asc')->paginate(100);
 
 
 
@@ -531,7 +564,7 @@ class AdminController extends Controller
     {
         $data['title'] = "Academic Year";
         $data['eroute'] = "edit-academic-year";
-        $data['ays'] = AcademicYear::orderBy('id', 'asc')->paginate(10);
+        $data['ays'] = AcademicYear::orderBy('id', 'asc')->paginate(100);
 
 
 
@@ -870,7 +903,7 @@ class AdminController extends Controller
       
         $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
         $data['deps'] = Department::all();
-        // $data['cons'] = Contribution::whereStatus(1)->orderBy('id', 'asc')->paginate(10);
+        // $data['cons'] = Contribution::whereStatus(1)->orderBy('id', 'asc')->paginate(100);
         $data['allcons'] = Contribution::whereAcademicYear($cay->id)->get()->count();
         $data['comcons'] = Contribution::whereAcademicYear($cay->id)->whereNotIn('status',[2,4])->count();
         $data['nocoms'] = Contribution::whereAcademicYear($cay->id)->whereNotIn('status',[2,4])->where('created_at', '<=', Carbon::now()->subDays(14)->toDateTimeString())->count();
@@ -969,10 +1002,62 @@ class AdminController extends Controller
 
         File::delete($cay->year.'_approved.zip');
 
-        $files = glob('upload/Approved/');
+        $files = glob('upload/approved/'.$cay->year.'/');
         Zipper::make($cay->year.'_approved.zip')->add($files)->close();
 
 
         return redirect($cay->year.'_approved.zip');
+    }
+
+    public function postDownloadApproved(Request $request){
+
+        $this->validate($request,[
+            'id' => 'required',
+            'id.*' => 'numeric|exists:contributions,id',
+        ]);
+
+        $ids = $request->id;
+        $uay = Cookie::get('uay');
+
+        if ($uay) {
+            $cay = AcademicYear::findOrFail($uay);
+        }else{
+            $cay = AcademicYear::whereYear('opening_date', '=', date('Y'))->first();
+        }
+        $data['cay'] = $cay;
+
+        File::delete('selected_'.$cay->year.'_approved.zip');
+
+    foreach ($ids as $id) {
+            # code...
+       
+
+        $con = Contribution::findOrFail($id);
+
+        if ($con->status == 1) {
+            session()->flash('message', ' One or more Contribution is not approved or something went wrong with it!');
+            Session::flash('type', 'warning');
+            return redirect()->back();
+            
+        }elseif ($con->status == 2) {
+            session()->flash('message', ' One or more Contribution is not approved or something went wrong with it!');
+            Session::flash('type', 'warning');
+            return redirect()->back();
+           
+        }elseif ($con->status == 3 || $con->status == 4 ) {
+            $files = glob('upload/approved/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/');
+        Zipper::make('selected_'.$cay->year.'_approved.zip')->add($files)->close();
+        }else{
+        session()->flash('message', ' One or more Contribution is already approved or something went wrong with it!');
+        Session::flash('type', 'warning');
+        return redirect()->back();
+        }
+
+    }
+        // session()->flash('message', 'Contribution(s) status Successfully updated!');
+        // Session::flash('type', 'success');
+        // return redirect()->back();
+
+        return redirect('selected_'.$cay->year.'_approved.zip');  
     }
 }

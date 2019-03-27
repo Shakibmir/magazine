@@ -24,6 +24,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@8.5.0/dist/sweetalert2.min.css">
+
 
   {{-- <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
@@ -117,7 +119,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                with font-awesome or any other icon font library -->
 
           <li class="nav-item">
-            <a href="{{ route('home') }}" class="nav-link {{Request::route()->getName() == 'home' ? 'active' : '' }}">
+            <a href="{{ route('home') }}" class="nav-link {{Request::route()->getName() == 'student' || Request::route()->getName() == 'admin' || Request::route()->getName() == 'coordinator' || Request::route()->getName() == 'manager' || Request::route()->getName() == 'faculty' ? 'active' : '' }}">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -134,6 +136,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="{{ route('stdacademic-years') }}" class="nav-link {{Request::route()->getName() == 'stdacademic-years' ? 'active' : '' }}">
+              <i class="nav-icon far fa-calendar-alt"> </i>
+              <p>
+                Academic Years
+              </p>
+            </a>
+          </li>
 
           @endif
 
@@ -141,7 +151,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           @if(Auth::user()->role == 5)
 
           <li class="nav-item">
-            <a href="{{ route('contributions') }}" class="nav-link {{Request::route()->getName() == 'contributions' ? 'active' : '' }}">
+            <a href="{{ route('contributions') }}" class="nav-link {{Request::route()->getName() == 'contributions' || Request::route()->getName() == 'approved-contributions' || Request::route()->getName() == 'commented-contributions' || Request::route()->getName() == 'pending-contributions' || Request::route()->getName() == 'single-contribution'? 'active' : '' }}">
               <i class="nav-icon fas fa-file-contract"></i>
               <p>
                 Contributions
@@ -156,16 +166,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <i class="nav-icon far fa-calendar-alt"> </i>
               <p>
                 Academic Years
-                {{-- <span class="right badge badge-danger">New</span> --}}
               </p>
             </a>
           </li>
 
           <li class="nav-item">
             <a href="{{ route('departments') }}" class="nav-link {{Request::route()->getName() == 'departments' ? 'active' : '' }}">
-              <i class="nav-icon far fa-calendar-alt"> </i>
+              <i class="fas fa-landmark"></i>
               <p>
-                Departments
+                Faculties
                 {{-- <span class="right badge badge-danger">New</span> --}}
               </p>
             </a>
@@ -344,7 +353,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('assets/dist/js/adminlte.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8.5.0/dist/sweetalert2.all.min.js"></script>
 
+<script>
+    @if (session()->has('message'))
+        Swal.fire({
+        title: "{!! session()->get('title')  !!}",
+        text: "{!! session()->get('message')  !!}",
+        type: "{!! session()->get('type')  !!}",
+        confirmButtonText: "OK"
+    });
+        {{ Session::forget('message')}}
+    @endif
+
+</script>
 
 @yield('scripts')
 </body>

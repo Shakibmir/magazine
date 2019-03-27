@@ -19,8 +19,8 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th style="width: 10px">#</th>
-                                <th>Department</th>
+                                <th style="width: 10px"><i class="fas fa-landmark"></i></th>
+                                <th>Faculty</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
