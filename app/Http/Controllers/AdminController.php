@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use App\AcademicYear;
 use App\Comment;
@@ -972,6 +973,26 @@ class AdminController extends Controller
             'role' => 'required|in:1,2,3,4,5', //validate role input
             'department_id' => 'required|exists:departments,id', //validate role input
         ]);
+
+        if ($request->role == 3) {
+            
+            $coor = User::whereDepartmentId($request->department_id)->whereRole(3)->first();
+            if ($coor) {
+                session()->flash('message', 'A coordinator already exists for this department!');
+                Session::flash('type', 'error');
+                return redirect()->back()->withInput(Input::all());
+             } 
+        }
+
+        if ($request->role == 4) {
+            
+            $man = User::whereRole(4)->first();
+            if ($man) {
+                session()->flash('message', 'A Marketing manager has already been assigned!');
+                Session::flash('type', 'error');
+                return redirect()->back()->withInput(Input::all());
+             } 
+        }
 
         User::create([
             'name' => $request->name,

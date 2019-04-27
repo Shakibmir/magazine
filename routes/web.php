@@ -15,6 +15,7 @@ Route::get('/', 'HomeController@index')->name('home');
 
 Auth::routes();
 
+
 // Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/admin', 'AdminController@index')->name('admin');
 Route::get('/coordinator', 'CoordinatorController@index')->name('coordinator');
@@ -96,6 +97,44 @@ Route::get('zip', 'AdminController@zip')->name('zip');
 });
 
 
+Route::group(['prefix' => 'manager'], function() {
+
+
+
+/*
+*Contribution routes
+*/
+Route::match(['get', 'post'], 'contributions', 'AdminController@getContribution')->name('man-contributions');
+// Route::get('contributions/{year}', 'AdminController@getContributionsByYear')->name('contributions-year');
+Route::match(['get', 'post'], 'approved-contributions', 'AdminController@getApprovedContributions')->name('man-approved-contributions');
+Route::match(['get', 'post'],'commented-contributions', 'AdminController@getCommentedContribution')->name('man-commented-contributions');
+Route::match(['get', 'post'], 'pending-contributions', 'AdminController@getPendingContribution')->name('man-pending-contributions');
+
+});
+
+Route::group(['prefix' => 'coordinator'], function() {
+
+
+
+/*
+*Contribution routes
+*/
+Route::match(['get', 'post'], 'contributions', 'AdminController@getContribution')->name('coor-contributions');
+Route::match(['get', 'post'], 'approved-contributions', 'AdminController@getApprovedContributions')->name('coor-approved-contributions');
+Route::match(['get', 'post'],'commented-contributions', 'AdminController@getCommentedContribution')->name('commented-contributions');
+Route::match(['get', 'post'], 'pending-contributions', 'AdminController@getPendingContribution')->name('coor-pending-contributions');
+
+Route::get('contribution/{id}', 'AdminController@getSingleContribution')->name('coor-single-contribution');
+Route::post('contribution/{id}', 'AdminController@addComment')->name('coor-add-comment');
+
+
+/*
+* Reports routes
+*/
+Route::match(['get', 'post'], 'con-report', 'AdminController@getContributionReport')->name('coor-con-report');
+
+});
+
 
 Route::group(['prefix' => 'student'], function() {
 
@@ -115,4 +154,5 @@ Route::get('delete', 'StudentController@getDeleteCheck')->name('delete-check');
 
 });
 
-
+Route::get('register', 'AdminController@getAddUser')->name('register');
+Route::post('register', 'AdminController@postAddUser')->name('register');

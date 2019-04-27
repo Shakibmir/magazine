@@ -388,11 +388,11 @@
                 <input type="text" class="form-control" id="title" placeholder="Some Awesome Title" name="title" value="{{ old('title') }}">
               </div>
               <div class="form-group">
-               <label for="file">File</label>
+               <label for="file">File <small>(only: doc,docx,pdf files allowed)</small></label>
                 <input type="file" class="form-control" id="file" placeholder="something-awesome.doc" name="doc" value="{{ old('doc') }}">
               </div>
               <div class="form-group">
-                <label for="photo">Photos</label>
+                <label for="photo">Photos <small>(only: jpeg,png,jpg,gif,svg files allowed)</small></label>
                 <input type="file" class="form-control" id="photo" placeholder="" name="file[]" multiple="">
               </div>
 

@@ -6,12 +6,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use App\AcademicYear;
 use App\Comment;
 use App\ConImg;
 use App\Contribution;
 use App\Department;
+use App\Mail\NewContribution;
+use App\User;
 
 use Carbon\Carbon;
 
@@ -144,6 +147,8 @@ class StudentController extends Controller
 
         $ray =  $acyear->year;
         $uid = Auth::user()->id;
+        $user = User::findOrFail($uid);
+        $coor = User::whereRole(3)->whereDepartmentId($user->department_id)->first();
        
 
 
@@ -196,9 +201,16 @@ class StudentController extends Controller
         }
     }
 
+        if ($coor) {
+            Mail::to($coor)->send(new NewContribution($user, $con));
+            session()->flash('message', 'Contribution Successfully Added and the Marketing Coordinator has been notified!');
+        }else{
+        
+            session()->flash('message', 'Contribution Successfully Added!');
+        }
         
 
-        session()->flash('message', 'Contribution Successfully Added!');
+        
         Session::flash('type', 'success');
         return redirect()->back();
     }

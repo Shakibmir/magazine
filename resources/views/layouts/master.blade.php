@@ -43,16 +43,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
+      {{-- <li class="nav-item d-none d-sm-inline-block">
         <a href="index3.html" class="nav-link">Home</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Contact</a>
-      </li>
+      </li> --}}
     </ul>
 
     <!-- SEARCH FORM -->
-    <form class="form-inline ml-3">
+    {{-- <form class="form-inline ml-3">
       <div class="input-group input-group-sm">
         <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
         <div class="input-group-append">
@@ -61,7 +61,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </button>
         </div>
       </div>
-    </form>
+    </form> --}}
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
@@ -141,6 +141,130 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <i class="nav-icon far fa-calendar-alt"> </i>
               <p>
                 Academic Years
+              </p>
+            </a>
+          </li>
+
+          @endif
+
+          @if(Auth::user()->role == 1)
+          <li class="nav-item">
+            <a href="{{ route('stdcontributions') }}" class="nav-link {{Request::route()->getName() == 'stdcontributions' ? 'active' : '' }}">
+              <i class="nav-icon fas fa-file-contract"></i>
+              <p>
+                Contributions
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('stdacademic-years') }}" class="nav-link {{Request::route()->getName() == 'stdacademic-years' ? 'active' : '' }}">
+              <i class="nav-icon far fa-calendar-alt"> </i>
+              <p>
+                Academic Years
+              </p>
+            </a>
+          </li>
+
+          @endif
+
+          @if(Auth::user()->role == 4)
+          <li class="nav-item">
+            <a href="{{ route('contributions') }}" class="nav-link {{Request::route()->getName() == 'contributions' || Request::route()->getName() == 'approved-contributions' || Request::route()->getName() == 'commented-contributions' || Request::route()->getName() == 'pending-contributions' || Request::route()->getName() == 'single-contribution'? 'active' : '' }}">
+              <i class="nav-icon fas fa-file-contract"></i>
+              <p>
+                Contributions
+              </p>
+            </a>
+          </li>
+          
+
+          
+          <li class="nav-item">
+            <a href="{{ route('academic-years') }}" class="nav-link {{Request::route()->getName() == 'academic-years' ? 'active' : '' }}">
+              <i class="nav-icon far fa-calendar-alt"> </i>
+              <p>
+                Academic Years
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{{ route('departments') }}" class="nav-link {{Request::route()->getName() == 'departments' ? 'active' : '' }}">
+              <i class="fas fa-landmark"></i>
+              <p>
+                Faculties
+                {{-- <span class="right badge badge-danger">New</span> --}}
+              </p>
+            </a>
+          </li>
+
+
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link {{Request::route()->getName() == 'con-report' || Request::route()->getName() == 'con-percentage' || Request::route()->getName() == 'contributor-number' || Request::route()->getName() == 'contributor-without-comment' ? 'active' : '' }}">
+              <i class="fas fa-chart-area"></i>
+              <p>
+                 Reports
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('con-report') }}" class="nav-link {{Request::route()->getName() == 'con-report' ? 'active' : '' }}">
+                  <i class="fas fa-chart-bar"></i>
+                  <p>Number of contributions</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('con-percentage') }}" class="nav-link {{Request::route()->getName() == 'con-percentage' ? 'active' : '' }}">
+                  <i class="fas fa-chart-pie"></i>
+                  <p>Percentage of contributions </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('contributor-number') }}" class="nav-link {{Request::route()->getName() == 'contributor-number' ? 'active' : '' }}">
+                  <i class="far fa-chart-bar"></i>
+                  <p>Number of contributors </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('contributor-without-comment') }}" class="nav-link {{Request::route()->getName() == 'contributor-without-comment' ? 'active' : '' }}">
+                  <i class="fas fa-comments"></i>
+                  <p>Comment status</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link {{Request::route()->getName() == 'users' || Request::route()->getName() == 'add-user' ? 'active' : '' }}">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                 Users
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('add-user') }}" class="nav-link {{Request::route()->getName() == 'add-user' ? 'active' : '' }}">
+                  <i class="fas fa-user-plus"></i>
+                  <p> Add User</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('users') }}" class="nav-link {{Request::route()->getName() == 'users' ? 'active' : '' }}">
+                  <i class="fas fa-clipboard-list"></i>
+                  <p> All Users</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fa fa-th"></i>
+              <p>
+                Settings
+                {{-- <span class="right badge badge-danger">New</span> --}}
               </p>
             </a>
           </li>
