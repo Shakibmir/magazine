@@ -43,6 +43,10 @@ class AdminController extends Controller
     public function index()
     {
         $data['title'] = "Dashboard";
+        $data['rcon'] = "contributions";
+        $data['racon'] = "approved-contributions";
+        $data['rccon'] = "commented-contributions";
+        $data['rpcon'] = "pending-contributions";
 
         
         $cay = AcademicYear::whereYear('opening_date', '=', date('Y'))->first();
@@ -70,6 +74,12 @@ class AdminController extends Controller
         $data['eroute'] = "edit-contribution";
         $data['sroute'] = "single-contribution";
         $data['aroute'] = "approve-contribution";
+        $data['asroute'] = "approve-contributions";
+
+         $data['rcon'] = "contributions";
+        $data['racon'] = "approved-contributions";
+        $data['rccon'] = "commented-contributions";
+        $data['rpcon'] = "pending-contributions";
       
         
         // $uay = Cookie::get('uay');
@@ -152,6 +162,12 @@ class AdminController extends Controller
         $data['eroute'] = "edit-contribution";
         $data['sroute'] = "single-contribution";
         $data['aroute'] = "approve-contribution";
+        $data['asroute'] = "approve-contributions";
+
+         $data['rcon'] = "contributions";
+        $data['racon'] = "approved-contributions";
+        $data['rccon'] = "commented-contributions";
+        $data['rpcon'] = "pending-contributions";
       
         $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
         $uay = Cookie::get('uay');
@@ -196,6 +212,12 @@ class AdminController extends Controller
         $data['eroute'] = "edit-contribution";
         $data['sroute'] = "single-contribution";
         $data['aroute'] = "approve-contribution";
+        $data['asroute'] = "approve-contributions";
+
+         $data['rcon'] = "contributions";
+        $data['racon'] = "approved-contributions";
+        $data['rccon'] = "commented-contributions";
+        $data['rpcon'] = "pending-contributions";
       
         $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
         $uay = Cookie::get('uay');
@@ -237,6 +259,12 @@ class AdminController extends Controller
         $data['eroute'] = "edit-contribution";
         $data['sroute'] = "single-contribution";
         $data['aroute'] = "approve-contribution";
+        $data['asroute'] = "approve-contributions";
+
+         $data['rcon'] = "contributions";
+        $data['racon'] = "approved-contributions";
+        $data['rccon'] = "commented-contributions";
+        $data['rpcon'] = "pending-contributions";
       
         $data['ays'] = AcademicYear::orderBy('id', 'desc')->get();
         $uay = Cookie::get('uay');
@@ -279,10 +307,11 @@ class AdminController extends Controller
         $conimgs = ConImg::whereConId($id)->get();
 
 
-        if (!$con->status > 2 && ($con->file_name || $conimgs)) {
-
+         if ($con->status < 3 && ($con->file_name || $conimgs)) {
+            if(File::exists('upload/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/')) {
             File::move('upload/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/', 'upload/approved/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/');
         }
+    }
 
 
         if ($con->status == 1) {
@@ -321,8 +350,11 @@ class AdminController extends Controller
         $conimgs = ConImg::whereConId($id)->get();
 
 
-        if (!$con->status > 2 && ($con->file_name || $conimgs)) {
+        if ($con->status < 3 && ($con->file_name || $conimgs)) {
+            if(File::exists('upload/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/')) {
+    // path does not exist
             File::move('upload/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/', 'upload/approved/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/');
+            }
         }
 
         if ($con->status == 1) {

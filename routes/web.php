@@ -119,19 +119,29 @@ Route::group(['prefix' => 'coordinator'], function() {
 /*
 *Contribution routes
 */
-Route::match(['get', 'post'], 'contributions', 'AdminController@getContribution')->name('coor-contributions');
-Route::match(['get', 'post'], 'approved-contributions', 'AdminController@getApprovedContributions')->name('coor-approved-contributions');
-Route::match(['get', 'post'],'commented-contributions', 'AdminController@getCommentedContribution')->name('commented-contributions');
-Route::match(['get', 'post'], 'pending-contributions', 'AdminController@getPendingContribution')->name('coor-pending-contributions');
+Route::match(['get', 'post'], 'contributions', 'CoordinatorController@getContribution')->name('coor-contributions');
+Route::match(['get', 'post'], 'approved-contributions', 'CoordinatorController@getApprovedContributions')->name('coor-approved-contributions');
+Route::match(['get', 'post'],'commented-contributions', 'CoordinatorController@getCommentedContribution')->name('coor-commented-contributions');
+Route::match(['get', 'post'], 'pending-contributions', 'CoordinatorController@getPendingContribution')->name('coor-pending-contributions');
 
-Route::get('contribution/{id}', 'AdminController@getSingleContribution')->name('coor-single-contribution');
-Route::post('contribution/{id}', 'AdminController@addComment')->name('coor-add-comment');
+Route::get('contribution/{id}', 'CoordinatorController@getSingleContribution')->name('coor-single-contribution');
+Route::post('contribution/{id}', 'CoordinatorController@addComment')->name('coor-add-comment');
+
+
+/*
+* Contribution Approval routes
+*/
+
+Route::post('approve-contributions', 'CoordinatorController@postApproveContributions')->name('coor-approve-contributions');
+Route::get('approve-contribution/{id}', 'CoordinatorController@getApproveContribution')->name('coor-approve-contribution');
+Route::post('download-approved', 'CoordinatorController@postDownloadApproved')->name('coor-download-approved');
 
 
 /*
 * Reports routes
 */
-Route::match(['get', 'post'], 'con-report', 'AdminController@getContributionReport')->name('coor-con-report');
+Route::match(['get', 'post'], 'con-report', 'CoordinatorController@getContributionReport')->name('coor-con-report');
+
 
 });
 
@@ -156,3 +166,7 @@ Route::get('delete', 'StudentController@getDeleteCheck')->name('delete-check');
 
 Route::get('register', 'AdminController@getAddUser')->name('register');
 Route::post('register', 'AdminController@postAddUser')->name('register');
+
+
+Route::get('change-password', 'HomeController@getChangePassword')->name('change-password');
+Route::post('change-password', 'HomeController@postChangePassword')->name('change-user-password');

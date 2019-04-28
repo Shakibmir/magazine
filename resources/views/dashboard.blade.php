@@ -13,7 +13,7 @@
 </div>
 
 
-@if(Auth::user()->role == 5)
+@if(Auth::user()->role >= 3)
 <div class="row">
   {{-- <div class="col-lg-3 col-6">
     <!-- small card -->
@@ -44,7 +44,7 @@
         {{-- <i class="fas fa-file-signature"></i> --}}
         <i class="fas fa-file-contract"></i>
       </div>
-      <a href="{{ route('contributions') }}" class="small-box-footer">
+      <a href="{{ route($rcon) }}" class="small-box-footer">
         More info <i class="fa fa-arrow-circle-right"></i>
       </a>
     </div>
@@ -62,7 +62,7 @@
         {{-- <i class="fas fa-file-signature"></i> --}}
         <i class="fas fa-clipboard-check"></i>
       </div>
-      <a href="{{ route('approved-contributions') }}" class="small-box-footer">
+      <a href="{{ route($racon) }}" class="small-box-footer">
         More info <i class="fa fa-arrow-circle-right"></i>
       </a>
     </div>
@@ -80,7 +80,7 @@
         <i class="fas fa-file-signature"></i>
         {{-- <i class="fas fa-file-invoice"></i> --}}
       </div>
-      <a href="{{ route('commented-contributions') }}" class="small-box-footer">
+      <a href="{{ route($rccon) }}" class="small-box-footer">
         More info <i class="fa fa-arrow-circle-right"></i>
       </a>
     </div>
@@ -98,7 +98,7 @@
         {{-- <i class="fas fa-file-signature"></i> --}}
         <i class="fas fa-file"></i>
       </div>
-      <a href="{{ route('pending-contributions') }}" class="small-box-footer">
+      <a href="{{ route($rpcon) }}" class="small-box-footer">
         More info <i class="fa fa-arrow-circle-right"></i>
       </a>
     </div>
@@ -114,7 +114,7 @@
       <div class="icon">
         <i class="fas fa-user-graduate"></i>
       </div>
-      <a href="{{ route('contributions') }}" class="small-box-footer">
+      <a href="{{ route($rcon) }}" class="small-box-footer">
         More info <i class="fa fa-arrow-circle-right"></i>
       </a>
     </div>
@@ -131,7 +131,7 @@
       <div class="icon">
         <i class="fas fa-file-signature"></i>
       </div>
-      <a href="{{ route('contributions') }}" class="small-box-footer">
+      <a href="{{ route($rcon) }}" class="small-box-footer">
         More info <i class="fa fa-arrow-circle-right"></i>
       </a>
     </div>
@@ -147,7 +147,7 @@
       <div class="icon">
         <i class="fas fa-file-signature"></i>
       </div>
-      <a href="{{ route('contributions') }}" class="small-box-footer">
+      <a href="{{ route($rcon) }}" class="small-box-footer">
         More info <i class="fa fa-arrow-circle-right"></i>
       </a>
     </div>
@@ -173,7 +173,7 @@
 @elseif(Auth::user()->role == 4)
     Manager
 @elseif(Auth::user()->role == 3)
-    Coordinator
+
 @elseif(Auth::user()->role == 2)
   <div class="row">
     @if ($cay)

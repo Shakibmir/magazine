@@ -20,20 +20,20 @@
 
 
 <div class="row">
-  @if(Auth::user()->role > 3)
+  @if(Auth::user()->role > 2)
     <div class="col-md-12">
       <ul class="nav nav-pills nav-justified">
         <li class="nav-item">
-          <a class="nav-link {{Request::route()->getName() == 'contributions' ? 'active' : '' }}" href="{{ route('contributions') }}">All ({{ $allcons }})</a>
+          <a class="nav-link {{Request::route()->getName() == $rcon ? 'active' : '' }}" href="{{ route($rcon) }}">All ({{ $allcons }})</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{Request::route()->getName() == 'approved-contributions' ? 'active' : '' }}" href="{{ route('approved-contributions') }}">Approved ({{ $apvcons }})</a>
+          <a class="nav-link {{Request::route()->getName() == $racon ? 'active' : '' }}" href="{{ route($racon) }}">Approved ({{ $apvcons }})</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{Request::route()->getName() == 'commented-contributions' ? 'active' : '' }}" href="{{ route('commented-contributions') }}">Commented ({{ $comcons }})</a>
+          <a class="nav-link {{Request::route()->getName() == $rccon ? 'active' : '' }}" href="{{ route($rccon) }}">Commented ({{ $comcons }})</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{Request::route()->getName() == 'pending-contributions' ? 'active' : '' }}" href="{{ route('pending-contributions') }}">Pending ( {{ $pencons }})</a>
+          <a class="nav-link {{Request::route()->getName() == $rpcon ? 'active' : '' }}" href="{{ route($rpcon) }}">Pending ( {{ $pencons }})</a>
         </li>
       </ul>
       <br>
@@ -121,12 +121,12 @@
                 </form>
             </div>
               <!-- /.card-header -->
-        @if(Auth::user()->role > 4)
+        @if(Auth::user()->role > 2)
           <form 
-          @if (Request::route()->getName() == 'approved-contributions')
+          @if (Request::route()->getName() == $racon)
           action="{{ route('download-approved') }}"
           @else 
-          action="{{ route('approve-contributions') }}" 
+          action="{{ route($asroute) }}" 
           @endif
 
           method="post">
@@ -137,7 +137,7 @@
                      <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                              @if(Auth::user()->role > 4)
+                              @if(Auth::user()->role > 2)
                                 <th><input type="checkbox" id="select-all"></th>
                               @endif
                                 <th style="width: 10px"><i class="nav-icon fas fa-file-contract"></i></th>
@@ -145,7 +145,7 @@
                                 <th style="width: 40px">Academic Year</th>
                                 <th>Date Submitted</th>
                                 <th style="width: 40px">Status</th>
-                                @if(Auth::user()->role > 4)
+                                @if(Auth::user()->role > 2)
                                 <th>Submitted By</th>
                                 <th>Department</th>
                                 @endif
@@ -160,7 +160,7 @@
 
 
                           <tr class="align-middle">
-                            @if(Auth::user()->role > 4)
+                            @if(Auth::user()->role > 2)
                             <td class="align-middle"><input type="checkbox" class="checkthis" id="exampleCheck{{ $con->id }}" name="id[]" value="{{ $con->id }}"></td>
                             @endif
                             <td class="align-middle"><a href="{{ route($sroute,$con->id) }}">{{ $con->id }}</a></td>
@@ -191,7 +191,7 @@
                               @endif
 
                             </td>
-                            @if(Auth::user()->role > 4)
+                            @if(Auth::user()->role > 2)
                             <td class="align-middle">{{ $con->user->name }}</td>
                             <td class="align-middle">{{ $con->user->dep->name }}</td>
                             @endif
@@ -236,7 +236,7 @@
                                 @endif
                               @endif
 
-                              @if(Auth::user()->role > 4)
+                              @if(Auth::user()->role > 2)
                               <a href="{{ route($sroute,$con->id) }}" class="btn btn-primary btn-sm">Comment</a>
                                 @if($con->status > 2)
                                   <button type="button" class="btn btn-success btn-sm" disabled="">Approved</button>
@@ -257,15 +257,15 @@
             
               <!-- /.card-body -->
             <div class="card-footer clearfix">
-              @if(Auth::user()->role > 4)
+              @if(Auth::user()->role > 2)
 
-              @if (Request::route()->getName() == 'approved-contributions')
+              @if (Request::route()->getName() == $racon)
                 <button type="submit" class="btn btn-success btn-sm" id="approvebtn" disabled="">Download Selected Contributions</button>
               @else 
                 <button type="submit" class="btn btn-success btn-sm" id="approvebtn" disabled="">Approve Selected Contributions</button>
               @endif
 
-               @if ($apvcons > 0)
+               @if ($apvcons > 0 && Auth::user()->role > 3)
                   <a href="{{ route('zip') }}"  class="btn btn-primary btn-sm ml-2" id="download"><i class="fas fa-file-archive"></i> Download Approved Contributions</a>
                 @else
                 <button type="button" class="btn btn-primary btn-sm ml-2" id="disdownload" disabled=""><i class="fas fa-file-archive"></i> Download Approved Contributions</button>

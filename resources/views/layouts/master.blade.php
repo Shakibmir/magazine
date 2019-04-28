@@ -167,33 +167,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
           @endif
 
-          @if(Auth::user()->role == 4)
+          @if(Auth::user()->role == 3)
           <li class="nav-item">
-            <a href="{{ route('contributions') }}" class="nav-link {{Request::route()->getName() == 'contributions' || Request::route()->getName() == 'approved-contributions' || Request::route()->getName() == 'commented-contributions' || Request::route()->getName() == 'pending-contributions' || Request::route()->getName() == 'single-contribution'? 'active' : '' }}">
+            <a href="{{ route('coor-contributions') }}" class="nav-link {{Request::route()->getName() == 'coor-contributions' || Request::route()->getName() == 'coor-approved-contributions' || Request::route()->getName() == 'coor-commented-contributions' || Request::route()->getName() == 'coor-pending-contributions' || Request::route()->getName() == 'coor-single-contribution'? 'active' : '' }}">
               <i class="nav-icon fas fa-file-contract"></i>
               <p>
                 Contributions
-              </p>
-            </a>
-          </li>
-          
-
-          
-          <li class="nav-item">
-            <a href="{{ route('academic-years') }}" class="nav-link {{Request::route()->getName() == 'academic-years' ? 'active' : '' }}">
-              <i class="nav-icon far fa-calendar-alt"> </i>
-              <p>
-                Academic Years
-              </p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ route('departments') }}" class="nav-link {{Request::route()->getName() == 'departments' ? 'active' : '' }}">
-              <i class="fas fa-landmark"></i>
-              <p>
-                Faculties
-                {{-- <span class="right badge badge-danger">New</span> --}}
               </p>
             </a>
           </li>
@@ -235,29 +214,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </ul>
           </li>
 
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link {{Request::route()->getName() == 'users' || Request::route()->getName() == 'add-user' ? 'active' : '' }}">
-              <i class="nav-icon fas fa-users"></i>
-              <p>
-                 Users
-                <i class="right fa fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{ route('add-user') }}" class="nav-link {{Request::route()->getName() == 'add-user' ? 'active' : '' }}">
-                  <i class="fas fa-user-plus"></i>
-                  <p> Add User</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{ route('users') }}" class="nav-link {{Request::route()->getName() == 'users' ? 'active' : '' }}">
-                  <i class="fas fa-clipboard-list"></i>
-                  <p> All Users</p>
-                </a>
-              </li>
-            </ul>
-          </li>
 
           <li class="nav-item">
             <a href="#" class="nav-link">

@@ -166,16 +166,18 @@ transition-delay:.2s;
                     }else{
                       $filepath = 'upload/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/';
                     }
-                    if($con->file_name){
-                      $filetype = mime_content_type($filepath.$con->file_name);
-                      $filesize = filesize($filepath.$con->file_name);
-                      $filesize = round($filesize / 1024, 2);
+                    $hasfile = 0;
+                    if(File::exists($filepath)){
+                      if($con->file_name){
+                        $filetype = mime_content_type($filepath.$con->file_name);
+                        $filesize = filesize($filepath.$con->file_name);
+                        $filesize = round($filesize / 1024, 2);
+                      }
+                      $hasfile = 1;
                     }
-
-                    
                     @endphp
 
-                    @if ($con->file_name && mime_content_type($filepath.$con->file_name) == 'application/pdf')
+                    @if ( $hasfile && $con->file_name && mime_content_type($filepath.$con->file_name) == 'application/pdf')
                       {{-- expr --}}
                     
                     <li>
@@ -189,7 +191,7 @@ transition-delay:.2s;
                             </span>
                       </div>
                     </li>
-                    @elseif($con->file_name && ($filetype == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || $filetype == 'application/msword'))
+                    @elseif( $hasfile && $con->file_name && ($filetype == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || $filetype == 'application/msword'))
                     <li>
                       <span class="mailbox-attachment-icon"><i class="far fa-file-word"></i></span>
 
@@ -251,10 +253,10 @@ transition-delay:.2s;
                     <!-- /.direct-chat-info -->
                     <img class="direct-chat-img" 
 
-                    @if ($com->user->role > 3)
-                      src="https://adminlte.io/themes/dev/AdminLTE/dist/img/user1-128x128.jpg"
-                    @else
+                    @if ($com->user->role > 2)
                       src="https://adminlte.io/themes/dev/AdminLTE/dist/img/user3-128x128.jpg"
+                    @else
+                      src="https://adminlte.io/themes/dev/AdminLTE/dist/img/user1-128x128.jpg"
                     @endif
 
                      alt="Message User Image">
@@ -282,7 +284,11 @@ transition-delay:.2s;
                  @endif
                 <form action="{{ route($route, $con->id) }}" method="post">
                   @csrf
-                  <img class="img-fluid img-circle img-sm" src="https://adminlte.io/themes/dev/AdminLTE/dist/img/user4-128x128.jpg" alt="Alt Text">
+                  <img class="img-fluid img-circle img-sm" @if (Auth::user()->role > 2)
+                      src="https://adminlte.io/themes/dev/AdminLTE/dist/img/user3-128x128.jpg"
+                    @else
+                      src="https://adminlte.io/themes/dev/AdminLTE/dist/img/user1-128x128.jpg"
+                    @endif alt="Alt Text">
                   <!-- .img-push is used to add margin to elements next to floating images -->
                   <div class="img-push form-group">
                     <textarea class="form-control form-control-lg" rows="4" name="comment" placeholder="Type something and hit send to post comments..." @if (Auth::user()->role == 2 && ($con->status == 3 || $con->status == 1)) disabled @endif></textarea>

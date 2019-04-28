@@ -154,6 +154,7 @@ class StudentController extends Controller
 
         $con['academic_year'] = $acyear->id;
         $con['user_id'] = Auth::user()->id;
+        $con['dep_id'] = Auth::user()->department_id;
 
         $con = Contribution::create($con);
 

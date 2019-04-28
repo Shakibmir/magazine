@@ -39,7 +39,7 @@ class ManagerController extends Controller
     public function index()
     {
 
-        $data['role'] = "Coordiantor";
+        $data['role'] = "Coordinator";
 
         $data['title'] = "Dashboard";
 
