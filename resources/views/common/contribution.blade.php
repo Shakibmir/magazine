@@ -124,7 +124,12 @@
         @if(Auth::user()->role > 2)
           <form 
           @if (Request::route()->getName() == $racon)
+
+          @isset ($downroute)
+          action="{{ route($downroute) }}"
+          @else
           action="{{ route('download-approved') }}"
+          @endisset
           @else 
           action="{{ route($asroute) }}" 
           @endif
@@ -149,7 +154,7 @@
                                 <th>Submitted By</th>
                                 <th>Department</th>
                                 @endif
-                                <th>Time Remaining</th>
+                                <th>Time Remaining for Update</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -266,7 +271,7 @@
               @endif
 
                @if ($apvcons > 0 && Auth::user()->role > 3)
-                  <a href="{{ route('zip') }}"  class="btn btn-primary btn-sm ml-2" id="download"><i class="fas fa-file-archive"></i> Download Approved Contributions</a>
+                  <a href=" @isset($zroute) {{ route($zroute) }} @else {{ route('zip') }} @endisset"  class="btn btn-primary btn-sm ml-2" id="download"><i class="fas fa-file-archive"></i> Download Approved Contributions</a>
                 @else
                 <button type="button" class="btn btn-primary btn-sm ml-2" id="disdownload" disabled=""><i class="fas fa-file-archive"></i> Download Approved Contributions</button>
               @endif 

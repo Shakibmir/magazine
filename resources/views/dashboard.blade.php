@@ -4,7 +4,7 @@
 <div class="row">
   <div class="col-12">
     <div class="alert alert-success">
-      Statistic shown in the Dashboard is for the current Academic year <strong>({{ $cay->year }})!</strong>
+      Statistic shown in the Dashboard is for the current Academic year <strong>({{ $cay->year }})!</strong> for Department: <strong> @isset ($dep) {{ Auth::user()->dep->name }}  @endisset</strong>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -171,7 +171,7 @@
   </div>
 </div>
 @elseif(Auth::user()->role == 4)
-    Manager
+
 @elseif(Auth::user()->role == 3)
 
 @elseif(Auth::user()->role == 2)
@@ -297,7 +297,145 @@
   </div>
 </div> 
 @else
-    Faculty
+<div class="row">
+    <div class="col-lg-3 col-6">
+    <!-- small card -->
+    <div class="small-box bg-primary">
+      <div class="inner">
+        <h3>{{ $allcons }}</h3>
+
+        <p>Contributions in {{ $cay->year }} in @isset ($dep) {{ Auth::user()->dep->name }}  @endisset Department</p>
+      </div>
+      <div class="icon">
+        {{-- <i class="fas fa-file-signature"></i> --}}
+        <i class="fas fa-file-contract"></i>
+      </div>
+      <a href="#" class="small-box-footer">
+        More info <i class="fa fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+  <!-- ./col -->
+  <div class="col-lg-3 col-6">
+    <!-- small card -->
+    <div class="small-box bg-success" style="filter: brightness(90%);">
+      <div class="inner">
+        <h3>{{ $apvcons }}</h3>
+
+        <p>Approved Contributions</p>
+      </div>
+      <div class="icon">
+        {{-- <i class="fas fa-file-signature"></i> --}}
+        <i class="fas fa-clipboard-check"></i>
+      </div>
+      <a href="#" class="small-box-footer">
+        More info <i class="fa fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+  <!-- ./col -->
+  <div class="col-lg-3 col-6">
+    <!-- small card -->
+    <div class="small-box bg-info">
+      <div class="inner">
+        <h3>{{ $comcons }}</h3>
+
+        <p>Commented Contributions</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-file-signature"></i>
+        {{-- <i class="fas fa-file-invoice"></i> --}}
+      </div>
+      <a href="#" class="small-box-footer">
+        More info <i class="fa fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+  <!-- ./col -->
+  <div class="col-lg-3 col-6">
+    <!-- small card -->
+    <div class="small-box bg-danger">
+      <div class="inner">
+        <h3>{{ $pencons }}</h3>
+
+        <p>Pending Contributions</p>
+      </div>
+      <div class="icon">
+        {{-- <i class="fas fa-file-signature"></i> --}}
+        <i class="fas fa-file"></i>
+      </div>
+      <a href="$" class="small-box-footer">
+        More info <i class="fa fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+  <div class="col-lg-3 col-6">
+    <!-- small card -->
+    <div class="small-box bg-primary">
+      <div class="inner">
+        <h3>{{ $userc }}</h3>
+
+        <p>Total Students in @isset ($dep) {{ Auth::user()->dep->name }}  @endisset Department</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-user-graduate"></i>
+      </div>
+      <a href="#" class="small-box-footer">
+        More info <i class="fa fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+  <!-- ./col -->
+  <div class="col-lg-3 col-6">
+    <!-- small card -->
+    <div class="small-box bg-warning">
+      <div class="inner">
+        <h3>{{ $nocoms }}</h3>
+
+        <p>Not commented</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-file-signature"></i>
+      </div>
+      <a href="#" class="small-box-footer">
+        More info <i class="fa fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+  <div class="col-lg-3 col-6">
+    <!-- small card -->
+    <div class="small-box bg-danger">
+      <div class="inner">
+        <h3>{{ $nocomsl }}</h3>
+
+        <p>Not commented after 14 days</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-file-signature"></i>
+      </div>
+      <a href="#" class="small-box-footer">
+        More info <i class="fa fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-6">
+    <!-- small card -->
+    <div class="small-box bg-dark">
+      <div class="inner">
+        <h3>{{ $ureps }}</h3>
+
+        <p>Total Contributors</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-user-edit"></i>
+      </div>
+      <a href="#" class="small-box-footer">
+        More info <i class="fa fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+</div>
 @endif
 
 

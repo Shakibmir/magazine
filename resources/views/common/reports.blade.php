@@ -6,7 +6,7 @@
 
 @endsection
 @section('content')
-@if( (Auth::user()->role == 1 || Auth::user()->role > 4 ))
+@if( (Auth::user()->role > 3 ))
 <!-- SELECT2 EXAMPLE -->
   <div class="card card-default">
     <div class="card-header">
@@ -186,6 +186,19 @@
                       
                     @endphp
                     @foreach($reps as $rp => $contributions)
+                    @if (Auth::user()->role == 1 || Auth::user()->role == 3)
+
+                    @if (Auth::user()->department_id == $rp)
+                     <tr class="align-middle">
+                        <td class="align-middle">
+                      {{ Auth::user()->dep->name }}
+                      </td>
+                        <td class="align-middle">{{ round((count($contributions))*$scper, 2) }} %</td>
+                      </tr>
+                    @endif
+
+
+                    @else
                       <tr class="align-middle">
                         <td class="align-middle">
                           @foreach($deps as $dep)
@@ -196,6 +209,7 @@
                         </td>
                         <td class="align-middle">{{ round((count($contributions))*$scper, 2) }} %</td>
                       </tr>
+                    @endif
                     @endforeach
                   </tbody>
                 </table>

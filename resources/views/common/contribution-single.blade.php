@@ -276,7 +276,10 @@ transition-delay:.2s;
                 </div>
               </div>
               <!-- /.card-footer -->
+
+              @if (Auth::user()->role != 4)
               <div class="card-footer">
+
                  @if (Auth::user()->role == 2 && ($con->status == 3 || $con->status == 1)) 
                   <div class="alert alert-danger">
                     Comments are enabled only after review.
@@ -299,6 +302,7 @@ transition-delay:.2s;
                   </div>
                 </form>
               </div>
+              @endif
               <!-- /.card-footer -->
             </div>
             <!-- /.card -->

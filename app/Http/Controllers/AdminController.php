@@ -991,6 +991,7 @@ class AdminController extends Controller
     {
         $data['title'] = "Add User";
         $data['route'] = "post-add-user";
+        $data['edit'] = 0;
         $data['deps'] = Department::all();
         return view('admin.add-edit-user', $data);
     }
@@ -1037,6 +1038,83 @@ class AdminController extends Controller
         session()->flash('message', 'User successfully Added!');
         Session::flash('type', 'success');
         return redirect()->route('users');
+    }
+
+    public function getEditUser($id)
+    {
+        $data['title'] = "Update User";
+        $data['route'] = "post-update-user";
+        $data['edit'] = 1;
+        $data['deps'] = Department::all();
+        $data['user'] = User::findOrFail($id);
+        return view('admin.add-edit-user', $data);
+    }
+
+    public function postUpdateUser($id,Request $request)
+    {
+    
+    $user = User::findOrFail($id);
+    if ($user->email != $request->email) {
+        $this->validate($request,[
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            // 'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'role' => 'required|in:1,2,3,4,5', //validate role input
+            'department_id' => 'required|exists:departments,id', //validate role input
+        ]);
+    }else{
+        $this->validate($request,[
+            'name' => ['required', 'string', 'max:255'],
+            // 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            // 'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'role' => 'required|in:1,2,3,4,5', //validate role input
+            'department_id' => 'required|exists:departments,id', //validate role input
+        ]);
+    }
+
+
+        if ($request->role == 3) {
+            
+            $coor = User::whereDepartmentId($request->department_id)->whereRole(3)->first();
+            if ($coor) {
+                session()->flash('message', 'A coordinator already exists for this department!');
+                Session::flash('type', 'error');
+                return redirect()->back()->withInput(Input::all());
+             } 
+        }
+
+        if ($request->role == 4) {
+            
+            $man = User::whereRole(4)->first();
+            if ($man) {
+                session()->flash('message', 'A Marketing manager has already been assigned!');
+                Session::flash('type', 'error');
+                return redirect()->back()->withInput(Input::all());
+             } 
+        }
+
+    if ($request->password) {
+            $user['password'] = bcrypt($request->password);
+        }
+        if ($user->name != $request->name) {
+            $user['name'] = $request->name;
+        }
+        if ($user->email != $request->email) {
+            $user['email'] = $request->email;
+        }
+        if ($user->role != $request->role) {
+            $user['role'] =  $request->role;
+        }
+        if ($user->department_id != $request->department_id) {
+            $user['department_id'] =  $request->department_id;
+        }
+
+        $user->save();
+
+
+        session()->flash('message', 'User successfully Updated!');
+        Session::flash('type', 'success');
+        return redirect()->back();
     }
 
 
