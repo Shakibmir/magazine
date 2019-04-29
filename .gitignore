@@ -9,9 +9,9 @@ app/storage/
 
 # Laravel 5 & Lumen specific
 public/storage
-public/hot
 public/upload
-SQL_dump
+public/hot
+SQL_dump/*sql
 storage/*.key
 .env
 Homestead.yaml
