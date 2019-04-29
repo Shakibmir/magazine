@@ -27,6 +27,9 @@ class Contribution extends Model
     public function dep() {
         return $this->belongsTo(Department::class, 'dep_id');
     }
+    public function conimgs() {
+        return $this->hasMany(ConImg::class, 'con_id');
+    }
 
     public $timestamps = true;
 }

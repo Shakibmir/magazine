@@ -40,4 +40,8 @@ class User extends Authenticatable
     public function dep() {
         return $this->belongsTo(Department::class, 'department_id');
     }
+
+    public function cons() {
+        return $this->hasMany(Contributions::class, 'user_id');
+    }
 }

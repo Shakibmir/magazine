@@ -320,6 +320,11 @@ class CoordinatorController extends Controller
 
          if ($con->status < 3 && ($con->file_name || $conimgs)) {
             if(File::exists('upload/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/')) {
+
+                if (!File::exists('upload/approved/'.$con->acyear->year.'/')) {
+                    $nepath = 'upload/approved/'.$con->acyear->year.'/';
+                    File::makeDirectory($nepath);
+                }
             File::move('upload/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/', 'upload/approved/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/');
         }
     }
@@ -371,6 +376,10 @@ class CoordinatorController extends Controller
         if ($con->status < 3 && ($con->file_name || $conimgs)) {
             if(File::exists('upload/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/')) {
     // path does not exist
+                 if (!File::exists('upload/approved/'.$con->acyear->year.'/')) {
+                    $nepath = 'upload/approved/'.$con->acyear->year.'/';
+                    File::makeDirectory($nepath);
+                }
             File::move('upload/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/', 'upload/approved/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/');
             }
         }

@@ -309,6 +309,10 @@ class AdminController extends Controller
 
          if ($con->status < 3 && ($con->file_name || $conimgs)) {
             if(File::exists('upload/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/')) {
+                if (!File::exists('upload/approved/'.$con->acyear->year.'/')) {
+                    $nepath = 'upload/approved/'.$con->acyear->year.'/';
+                    File::makeDirectory($nepath);
+                }
             File::move('upload/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/', 'upload/approved/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/');
         }
     }
@@ -353,6 +357,10 @@ class AdminController extends Controller
         if ($con->status < 3 && ($con->file_name || $conimgs)) {
             if(File::exists('upload/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/')) {
     // path does not exist
+                if (!File::exists('upload/approved/'.$con->acyear->year.'/')) {
+                    $nepath = 'upload/approved/'.$con->acyear->year.'/';
+                    File::makeDirectory($nepath);
+                }
             File::move('upload/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/', 'upload/approved/'.$con->acyear->year.'/con_'.$con->id.'_user_'.$con->user_id.'/');
             }
         }
@@ -614,7 +622,6 @@ class AdminController extends Controller
             'opening_date' => 'required|date',
             'closing_date' => 'required|date',
             'final_date' => 'required|date',
-            'tc' => 'required',
         ]);
 
 
@@ -625,7 +632,7 @@ class AdminController extends Controller
         if ($diff < 0) {
         session()->flash('message', 'Start time can not be older than today!');
         Session::flash('type', 'error');
-        return redirect()->back();
+        return redirect()->back()->withInput(Input::all());
         }
 
         $od=Carbon::parse($request->opening_date);
@@ -634,7 +641,7 @@ class AdminController extends Controller
         if ($cdiff < 1) {
         session()->flash('message', 'The closing date can not be older than opening date!');
         Session::flash('type', 'error');
-        return redirect()->back();
+        return redirect()->back()->withInput(Input::all());
         }
 
         $cd=Carbon::parse($request->closing_date);
@@ -643,7 +650,7 @@ class AdminController extends Controller
         if ($fdiff < 1) {
         session()->flash('message', 'The final date can not be older than closing date!');
         Session::flash('type', 'error');
-        return redirect()->back();
+        return redirect()->back()->withInput(Input::all());
         }
 
         // dd($diff."<br>".$cdiff."<br>".$fdiff);
@@ -705,7 +712,7 @@ class AdminController extends Controller
             if ($diff < 0) {
             session()->flash('message', 'Starting date can not be changed to older dates!');
             Session::flash('type', 'error');
-            return redirect()->back();
+            return redirect()->back()->withInput(Input::all());
             }
 
             $od=Carbon::parse($request->opening_date);
@@ -714,7 +721,7 @@ class AdminController extends Controller
             if ($cdiff < 1 && $ay->closing_date ==$request->closing_date) {
             session()->flash('message', 'Opening date can not be later than the closing date!');
             Session::flash('type', 'error');
-            return redirect()->back();
+            return redirect()->back()->withInput(Input::all());
             }
         }
 
@@ -726,7 +733,7 @@ class AdminController extends Controller
             if ($cdiff < 1) {
             session()->flash('message', 'Closing date can not be changed to older dates!');
             Session::flash('type', 'error');
-            return redirect()->back();
+            return redirect()->back()->withInput(Input::all());
             }
 
             $cd=Carbon::parse($request->closing_date);
@@ -735,7 +742,7 @@ class AdminController extends Controller
             if ($fdiff < 1 && $ay->final_date == $request->final_date) {
             session()->flash('message', 'The Closing date can not be changed to later than the final date!');
             Session::flash('type', 'error');
-            return redirect()->back();
+            return redirect()->back()->withInput(Input::all());
             }
         }
 
@@ -745,7 +752,7 @@ class AdminController extends Controller
 
             if ($fdiff < 1) {
             session()->flash('message', 'The final date can not be changed to older dates!');
-            Session::flash('type', 'error');
+            Session::flash('type', 'error')->withInput(Input::all());
             return redirect()->back();
             }
         }

@@ -120,7 +120,7 @@ transition-delay:.2s;
                   {{-- <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fa fa-minus"></i></button> --}}
                   @if (Auth::user()->role == 2)
                     <a href="{{ route($eroute,$con->id) }}" class="btn btn-tool"><i class="fas fa-edit"></i>
-                  @elseif (Auth::user()->role > 3)
+                  @elseif (Auth::user()->role > 2)
 
                     @if($con->status > 2)
                       <button type="button" class="btn btn-success btn-sm" disabled="">Approved</button>

@@ -265,7 +265,7 @@
 																		<th class="column-top"style="font-size:0pt; line-height:0pt; padding:0; margin:0; font-weight:normal; vertical-align:top;">
 																			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 																				<tr>
-																					<td class="h5-black black"style="font-family:'Raleway', Arial,sans-serif; font-size:14px; line-height:18px; text-align:left; padding-bottom:15px; text-transform:uppercase; font-weight:bold; color:#000000;"><multiline>Closer Date</multiline></td>
+																					<td class="h5-black black"style="font-family:'Raleway', Arial,sans-serif; font-size:14px; line-height:18px; text-align:left; padding-bottom:15px; text-transform:uppercase; font-weight:bold; color:#000000;"><multiline>Final Closer Date</multiline></td>
 																				</tr>
 																				<tr>
 																					<td class="text black"style="font-family:'Raleway', Arial,sans-serif; font-size:14px; line-height:22px; text-align:left; color:#000000;"><multiline>Contributions will not be cangable after the Final Closer Date, sed do eiusmod tempo dolore setr tempore alipsinung.</multiline></td>
