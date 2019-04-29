@@ -247,7 +247,11 @@
 
   <div class="card card-danger">
     <div class="card-header">
+       @if($rptype==3)
       <h3 class="card-title">Percentage of Contributions in Chart</h3>
+      @elseif($rptype==4)
+         <h3 class="card-title">Contributions Comment statistics </h3>
+      @endif
 
       <div class="card-tools">
         <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -267,9 +271,99 @@
   </div>
 
   @endif
+
+
+  @if ($rptype==1)
+    <!-- Donut chart -->
+            <div class="card card-primary card-outline">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fa fa-bar-chart-o"></i>
+                  Department wise contributions
+                </h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-widget="remove"><i class="fa fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div id="bar-chart" style="height: 300px;"></div>
+              </div>
+              <!-- /.card-body-->
+            </div>
+  @endif
 @endsection
 
 @section('scripts')
+
+
+@if ($rptype==1)
+<!-- FLOT CHARTS -->
+<script src="{{ asset('assets/plugins/flot/jquery.flot.min.js') }}"></script>
+<!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
+<script src="{{ asset('assets/plugins/flot/jquery.flot.resize.min.js') }}"></script>
+<!-- FLOT PIE PLUGIN - also used to draw donut charts -->
+<script src="{{ asset('assets/plugins/flot/jquery.flot.pie.min.js') }}"></script>
+<!-- FLOT CATEGORIES PLUGIN - Used to draw bar charts -->
+<script src="{{ asset('assets/plugins/flot/jquery.flot.categories.min.js') }}"></script>
+
+<script>
+
+  function getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+  /*
+     * BAR CHART
+     * ---------
+     */
+
+    var bar_data = {
+      data : [
+
+      @foreach($reps as $rp => $contributions) ['@foreach($deps as $dep) @if($dep->id == $rp) {{ $dep->name }} @endif @endforeach ',{{ count($contributions) }}], @endforeach ],
+      color: '#007bff'
+    }
+    $.plot('#bar-chart', [bar_data], {
+      grid  : {
+        borderWidth: 1,
+        borderColor: '#f3f3f3',
+        tickColor  : '#f3f3f3'
+      },
+      series: {
+        bars: {
+          show    : true,
+          barWidth: 0.5,
+          align   : 'center'
+        }
+      },
+      xaxis : {
+        mode      : 'categories',
+        tickLength: 0
+      }
+    })
+    /* END BAR CHART */
+
+      /*
+   * Custom Label formatter
+   * ----------------------
+   */
+  function labelFormatter(label, series) {
+    return '<div style="font-size:13px; text-align:center; padding:2px; color: #fff; font-weight: 600;">'
+      + label
+      + '<br>'
+      + Math.round(series.percent) + '%</div>'
+  }
+
+</script>
+@endif
 
  @if($rptype==3 || $rptype==4 )
 
@@ -291,6 +385,8 @@
   }
   return color;
 }
+
+
 
 @if($rptype==4)
 // Donut Chart
